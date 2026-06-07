@@ -34,6 +34,7 @@
         font-family: "Nunito", sans-serif;
       }
 
+      /* ===== PAGE SYSTEM ===== */
       .page {
         position: fixed;
         inset: 0;
@@ -62,6 +63,7 @@
         pointer-events: none;
       }
 
+      /* ===== CUSTOM CURSOR ===== */
       #cursor {
         width: 16px;
         height: 16px;
@@ -93,6 +95,7 @@
           top 0.1s;
       }
 
+      /* ===== PAGE PROGRESS ===== */
       #page-indicator {
         position: fixed;
         bottom: 1.2rem;
@@ -116,6 +119,7 @@
         transform: scale(1.4);
       }
 
+      /* ===== BG CANVAS ===== */
       #bg-canvas {
         position: fixed;
         inset: 0;
@@ -167,6 +171,7 @@
         }
       }
 
+      /* ===== CONFETTI ===== */
       #confetti-canvas {
         position: fixed;
         inset: 0;
@@ -174,6 +179,7 @@
         z-index: 9990;
       }
 
+      /* ===== BTN STYLES ===== */
       .btn-main {
         display: inline-flex;
         align-items: center;
@@ -258,7 +264,9 @@
         box-shadow: 0 8px 32px rgba(255, 133, 161, 0.12);
       }
 
-      /* PAGE 0 */
+      /* ========================================
+   PAGE 0 — LANDING / LOADING
+======================================== */
       #pg0 {
         background: linear-gradient(
           160deg,
@@ -320,7 +328,9 @@
         flex-wrap: wrap;
       }
 
-      /* PAGE 1 */
+      /* ========================================
+   PAGE 1 — INTRO CINEMATIC
+======================================== */
       #pg1 {
         background: var(--pink);
       }
@@ -400,6 +410,7 @@
             0 0 60px rgba(255, 77, 109, 0.5);
         }
       }
+      /* Calendar */
       .cal {
         background: white;
         border-radius: 20px;
@@ -442,6 +453,7 @@
         font-size: 0.65rem;
         font-weight: 800;
       }
+      /* Counter */
       .counter-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -480,6 +492,7 @@
         letter-spacing: 0.05em;
         margin-top: 3px;
       }
+      /* Story lines */
       .story-line {
         font-family: "Playfair Display", serif;
         font-size: clamp(1rem, 3.5vw, 1.6rem);
@@ -511,7 +524,9 @@
         transform: scale(1);
       }
 
-      /* PAGE 2 */
+      /* ========================================
+   PAGE 2 — HERO
+======================================== */
       #pg2 {
         background: linear-gradient(
           160deg,
@@ -548,7 +563,9 @@
         display: block;
       }
 
-      /* PAGE 3 */
+      /* ========================================
+   PAGE 3 — ABOUT
+======================================== */
       #pg3 {
         background: var(--blush);
       }
@@ -605,7 +622,9 @@
         color: #aa8800;
       }
 
-      /* PAGE 4 */
+      /* ========================================
+   PAGE 4 — COUNTER
+======================================== */
       #pg4 {
         background: linear-gradient(135deg, #ffe4ee 0%, #fff9c4 100%);
       }
@@ -638,7 +657,9 @@
         grid-column: 1/-1;
       }
 
-      /* PAGE 5 */
+      /* ========================================
+   PAGE 5 — SPECIAL (15 REASONS)
+======================================== */
       #pg5 {
         background: var(--blush);
         justify-content: flex-start;
@@ -683,7 +704,9 @@
         line-height: 1.5;
       }
 
-      /* PAGE 6 */
+      /* ========================================
+   PAGE 6 — FIGHT METER
+======================================== */
       #pg6 {
         background: linear-gradient(160deg, #fff0f5, #fff9d0);
       }
@@ -724,7 +747,9 @@
         transition: width 1.5s ease;
       }
 
-      /* PAGE 7 */
+      /* ========================================
+   PAGE 7 — CONSTELLATION
+======================================== */
       #pg7 {
         background: #1a0a1e;
         overflow: hidden;
@@ -740,6 +765,7 @@
       .constellation-sub {
         color: rgba(255, 220, 240, 0.7);
       }
+      /* Tap hint */
       .tap-hint {
         display: flex;
         flex-direction: column;
@@ -824,6 +850,7 @@
           box-shadow: 0 0 20px 6px rgba(255, 230, 109, 0.7);
         }
       }
+      /* Memory popup */
       #memory-popup {
         position: fixed;
         inset: 0;
@@ -884,13 +911,16 @@
         line-height: 1.65;
       }
 
-      /* PAGE 8 — SUNFLOWER GARDEN */
+      /* ========================================
+   PAGE 8 — SUNFLOWER GARDEN
+======================================== */
       #pg8 {
         background: linear-gradient(180deg, #fffde7 0%, #fff8e1 100%);
         overflow: hidden;
         padding: 0;
       }
 
+      /* ---- INTRO STATE: single sunflower ---- */
       #sun-intro {
         position: absolute;
         inset: 0;
@@ -915,6 +945,7 @@
         width: 160px;
         height: 160px;
       }
+      /* ripple rings behind the sunflower */
       .sun-ring {
         position: absolute;
         border-radius: 50%;
@@ -941,6 +972,7 @@
         z-index: 1;
         animation: sunBob 2s ease-in-out infinite;
         filter: drop-shadow(0 10px 24px rgba(180, 140, 0, 0.4));
+        /* touch-action for phones */
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
         user-select: none;
@@ -986,7 +1018,7 @@
         }
       }
 
-      /* GARDEN STATE */
+      /* ---- GARDEN STATE: full-screen bloom ---- */
       #sun-garden {
         position: absolute;
         inset: 0;
@@ -998,15 +1030,17 @@
         display: flex;
       }
 
+      /* The canvas fills entire screen with positioned sunflowers */
       #sf-canvas-wrap {
         position: absolute;
         inset: 0;
         overflow: hidden;
-        /* pointer-events: none removed so clicks pass through to flowers */
+        pointer-events: none;
       }
       .sf-item {
         position: absolute;
         cursor: pointer;
+        pointer-events: all;
         display: inline-block;
         opacity: 0;
         transform: scale(0) rotate(var(--r));
@@ -1017,8 +1051,6 @@
         -webkit-tap-highlight-color: transparent;
         user-select: none;
         line-height: 1;
-        /* ensure clicks work */
-        pointer-events: all;
       }
       @keyframes sfPop {
         0% {
@@ -1034,6 +1066,7 @@
           transform: scale(1) rotate(var(--r));
         }
       }
+      /* idle sway after bloom */
       .sf-item.sway {
         animation:
           sfPop var(--dur) var(--del) forwards cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -1053,6 +1086,7 @@
         transform: scale(1.3) rotate(var(--r)) !important;
       }
 
+      /* message box */
       #sf-msg {
         position: absolute;
         bottom: 5.5rem;
@@ -1082,6 +1116,8 @@
         opacity: 1;
         transform: translateX(-50%) translateY(0);
       }
+
+      /* next btn inside garden */
       #sf-next-btn {
         position: absolute;
         bottom: 1.2rem;
@@ -1093,7 +1129,9 @@
         white-space: nowrap;
       }
 
-      /* PAGE 9 */
+      /* ========================================
+   PAGE 9 — MOUNTAINS (UTTARAKHAND)
+======================================== */
       #pg9 {
         background: linear-gradient(
           180deg,
@@ -1111,6 +1149,7 @@
         display: flex;
         flex-direction: column;
       }
+      /* Mountain SVG at top */
       .mtn-svg-wrap {
         width: 100%;
         flex-shrink: 0;
@@ -1164,6 +1203,7 @@
         color: #3a6080;
         line-height: 1.4;
       }
+      /* Place names ribbon */
       .place-ribbon {
         display: flex;
         flex-wrap: wrap;
@@ -1198,7 +1238,9 @@
         }
       }
 
-      /* PAGE 10 */
+      /* ========================================
+   PAGE 10 — QUIZ
+======================================== */
       #pg10 {
         background: var(--blush);
       }
@@ -1287,7 +1329,9 @@
         font-weight: 700;
       }
 
-      /* PAGE 11 */
+      /* ========================================
+   PAGE 11 — SECRET LETTER
+======================================== */
       #pg11 {
         background: linear-gradient(160deg, #fff7f9, #f7f0ff);
       }
@@ -1398,7 +1442,9 @@
         color: var(--deep-rose);
       }
 
-      /* PAGE 12 */
+      /* ========================================
+   PAGE 12 — CERTIFICATE
+======================================== */
       #pg12 {
         background: linear-gradient(160deg, #fffbea, #fff7f9);
       }
@@ -1503,7 +1549,9 @@
         transform: scale(1.04);
       }
 
-      /* PAGE 13 */
+      /* ========================================
+   PAGE 13 — FINAL EMOTIONAL
+======================================== */
       #pg13 {
         background: radial-gradient(
           ellipse at center,
@@ -1564,6 +1612,7 @@
       .big-heart.on {
         opacity: 1;
       }
+      /* Floating particles in final */
       .fp {
         position: absolute;
         font-size: 1.2rem;
@@ -1577,9 +1626,10 @@
           transform: translateY(0) rotate(var(--rot));
         }
         50% {
-          transform: translateY(-20px) rotate(calc(var(--rot)+10deg));
+          transform: translateY(-20px) rotate(calc(var(--rot) + 10deg));
         }
       }
+      /* Letter lines in final */
       .farewell-letter {
         font-family: "Dancing Script", cursive;
         font-size: clamp(0.95rem, 2.8vw, 1.15rem);
@@ -1594,7 +1644,9 @@
         opacity: 1;
       }
 
-      /* NAV */
+      /* ========================================
+   NAV ARROW (bottom right)
+======================================== */
       #nav-arrow {
         position: fixed;
         bottom: 3.5rem;
@@ -1633,6 +1685,7 @@
         z-index: 800;
       }
 
+      /* ===== SCROLL inside pages ===== */
       .page.scrollable {
         overflow-y: auto;
         justify-content: flex-start;
@@ -1640,6 +1693,7 @@
         padding-bottom: 5rem;
       }
 
+      /* ===== RESPONSIVE ===== */
       @media (max-width: 480px) {
         .special-grid {
           grid-template-columns: 1fr 1fr;
@@ -1660,11 +1714,17 @@
     </style>
   </head>
   <body>
+    <!-- Cursor -->
     <div id="cursor"></div>
     <div id="cursor-ring"></div>
+
+    <!-- BG Canvas -->
     <div id="bg-canvas" aria-hidden="true"></div>
+
+    <!-- Confetti -->
     <canvas id="confetti-canvas"></canvas>
 
+    <!-- Memory Popup (global overlay) -->
     <div id="memory-popup">
       <div class="popup-card">
         <button class="popup-close" onclick="closeMemory()">✕</button>
@@ -1674,6 +1734,7 @@
       </div>
     </div>
 
+    <!-- Letter Modal -->
     <div id="letter-modal">
       <div class="letter-paper">
         <button class="lclose" onclick="closeLetter()">✕</button>
@@ -1718,8 +1779,10 @@
       </div>
     </div>
 
+    <!-- Page Indicator -->
     <div id="page-indicator"></div>
 
+    <!-- Nav Buttons -->
     <div id="nav-prev-btn">
       <button
         class="nav-btn nav-prev"
@@ -1736,7 +1799,9 @@
       </button>
     </div>
 
-    <!-- PAGE 0 -->
+    <!-- ============================
+     PAGE 0: LANDING
+============================ -->
     <div class="page active" id="pg0">
       <div class="p0-hero-hearts">💖</div>
       <h1 class="p0-title">
@@ -1753,18 +1818,23 @@
       </div>
     </div>
 
-    <!-- PAGE 1 -->
+    <!-- ============================
+     PAGE 1: CINEMATIC INTRO
+============================ -->
     <div class="page" id="pg1">
       <div class="intro-hearts-bg" id="intro-hearts-bg"></div>
+      <!-- Scene 1: Typewriter -->
       <div class="scene" id="s1">
         <p class="intro-title tw" id="tw-target"></p>
       </div>
+      <!-- Scene 2: Memory Found -->
       <div class="scene" id="s2">
         <p class="mem-found">Memory Found 💖</p>
         <p class="intro-sub" style="margin-top: 0.8rem; color: var(--rose)">
           Something beautiful is about to unfold...
         </p>
       </div>
+      <!-- Scene 3: Calendar -->
       <div class="scene" id="s3">
         <p class="intro-sub" style="margin-bottom: 1rem">
           It all started on this day...
@@ -1774,6 +1844,7 @@
           <div class="cal-grid" id="cal-grid"></div>
         </div>
       </div>
+      <!-- Scene 4: Counter -->
       <div class="scene" id="s4">
         <p
           class="intro-sub"
@@ -1810,10 +1881,12 @@
           </div>
         </div>
       </div>
+      <!-- Scene 5: Story -->
       <div class="scene" id="s5">
         <div id="story-container"></div>
         <div id="badge-container" style="margin-top: 1rem"></div>
       </div>
+      <!-- Scene 6: Welcome + CTA -->
       <div class="scene" id="s6">
         <div style="font-size: 3rem; margin-bottom: 0.5rem">🌻</div>
         <p
@@ -1833,7 +1906,9 @@
       </div>
     </div>
 
-    <!-- PAGE 2 -->
+    <!-- ============================
+     PAGE 2: HERO
+============================ -->
     <div class="page" id="pg2">
       <span class="hero-hearts">💖</span>
       <h1 class="hero-title">
@@ -1843,7 +1918,9 @@
       <button class="btn-main" onclick="nextPage()">🌸 Meet My Bestie →</button>
     </div>
 
-    <!-- PAGE 3 -->
+    <!-- ============================
+     PAGE 3: ABOUT
+============================ -->
     <div class="page" id="pg3">
       <span class="section-badge">✨ ABOUT MY BESTIE</span>
       <h2 class="section-title">She's One Of A Kind 🌻</h2>
@@ -1901,7 +1978,9 @@
       </button>
     </div>
 
-    <!-- PAGE 4 -->
+    <!-- ============================
+     PAGE 4: COUNTER
+============================ -->
     <div class="page" id="pg4">
       <span class="section-badge">⏳ FRIENDSHIP TIMER</span>
       <h2 class="section-title">We've Been Friends For...</h2>
@@ -1938,7 +2017,9 @@
       </button>
     </div>
 
-    <!-- PAGE 5 -->
+    <!-- ============================
+     PAGE 5: SPECIAL REASONS
+============================ -->
     <div class="page scrollable" id="pg5">
       <div
         style="
@@ -1965,7 +2046,9 @@
       </div>
     </div>
 
-    <!-- PAGE 6 -->
+    <!-- ============================
+     PAGE 6: FIGHT METER
+============================ -->
     <div class="page" id="pg6">
       <div class="text-center" style="margin-bottom: 0.3rem">
         <span class="section-badge">😂 THE REAL STATS</span>
@@ -1996,7 +2079,7 @@
           <div class="mfill" data-w="97" style="animation-delay: 1s"></div>
         </div>
         <div class="mlabel">
-          <span>💖 Love &amp; Care</span><span>Always 100%</span>
+          <span>💖 Love & Care</span><span>Always 100%</span>
         </div>
         <div class="mbar">
           <div class="mfill" data-w="100" style="animation-delay: 1.5s"></div>
@@ -2007,7 +2090,9 @@
       </button>
     </div>
 
-    <!-- PAGE 7 -->
+    <!-- ============================
+     PAGE 7: CONSTELLATION
+============================ -->
     <div class="page" id="pg7">
       <canvas id="star-canvas"></canvas>
       <span
@@ -2062,8 +2147,11 @@
       </button>
     </div>
 
-    <!-- PAGE 8 — SUNFLOWER GARDEN -->
+    <!-- ============================
+     PAGE 8: SUNFLOWER GARDEN
+============================ -->
     <div class="page" id="pg8">
+      <!-- INTRO: single sunflower -->
       <div id="sun-intro">
         <span
           class="section-badge"
@@ -2082,7 +2170,9 @@
         >
           One sunflower is waiting. It's shy. Give it a tap...
         </p>
+
         <div class="sun-arrow">👇</div>
+
         <div class="single-sun-wrap">
           <div class="sun-ring" style="--d: 2s; --dl: 0s"></div>
           <div class="sun-ring" style="--d: 2s; --dl: 0.6s"></div>
@@ -2095,21 +2185,26 @@
             >🌻</span
           >
         </div>
+
         <div class="sun-tap-label">Tap me! 🌸</div>
       </div>
 
+      <!-- GARDEN: full screen bloom -->
       <div id="sun-garden">
         <div id="sf-canvas-wrap"></div>
         <div id="sf-msg">Tap any sunflower 🌻</div>
         <button class="btn-main" id="sf-next-btn" onclick="nextPage()">
-          🏔 Uttarakhand →
+          🏔 Lets go to Uttarakhand →
         </button>
       </div>
     </div>
 
-    <!-- PAGE 9 -->
+    <!-- ============================
+     PAGE 9: MOUNTAINS
+============================ -->
     <div class="page" id="pg9" style="padding: 0">
       <div class="mtn-scene">
+        <!-- SVG Mountains -->
         <div class="mtn-svg-wrap" style="position: relative; overflow: hidden">
           <span
             class="cloud"
@@ -2187,6 +2282,7 @@
               fill="url(#m1)"
               opacity=".45"
             />
+            <!-- Snow caps -->
             <polygon
               points="180,60 150,140 210,140"
               fill="url(#snow)"
@@ -2207,8 +2303,10 @@
               fill="url(#snow)"
               opacity=".96"
             />
+            <!-- Sun/Moon -->
             <circle cx="1100" cy="55" r="30" fill="#FFE066" opacity=".7" />
             <circle cx="1100" cy="55" r="38" fill="#FFE066" opacity=".15" />
+            <!-- Ground -->
             <rect
               y="270"
               width="1200"
@@ -2218,6 +2316,7 @@
             />
           </svg>
         </div>
+        <!-- Content -->
         <div class="mtn-content">
           <span
             class="section-badge"
@@ -2244,16 +2343,18 @@
             The land of gods, glaciers, and golden sunsets. Your home runs in
             your veins, Ananya.
           </p>
+          <!-- Place names -->
           <div class="place-ribbon">
-            <span class="place-tag">🏔 Nanda Devi</span
-            ><span class="place-tag">❄️ Kedarnath</span
-            ><span class="place-tag">🌊 Rishikesh</span
-            ><span class="place-tag">🌿 Haridwar</span
-            ><span class="place-tag">🏕 Auli</span
-            ><span class="place-tag">🌸 Valley of Flowers</span
-            ><span class="place-tag">⛰ Mussoorie</span
-            ><span class="place-tag">🌙 Chopta</span>
+            <span class="place-tag">🏔 Nanda Devi</span>
+            <span class="place-tag">❄️ Kedarnath</span>
+            <span class="place-tag">🌊 Rishikesh</span>
+            <span class="place-tag">🌿 Haridwar</span>
+            <span class="place-tag">🏕 Auli</span>
+            <span class="place-tag">🌸 Valley of Flowers</span>
+            <span class="place-tag">⛰ Mussoorie</span>
+            <span class="place-tag">🌙 Chopta</span>
           </div>
+          <!-- Cards -->
           <div class="ukh-card-grid">
             <div class="ukh-card">
               <span class="ukh-icon">🏔</span>
@@ -2295,7 +2396,9 @@
       </div>
     </div>
 
-    <!-- PAGE 10 -->
+    <!-- ============================
+     PAGE 10: QUIZ
+============================ -->
     <div class="page" id="pg10">
       <span class="section-badge">🎯 FUN QUIZ</span>
       <h2 class="section-title">How Well Do You Know Yourself?</h2>
@@ -2352,7 +2455,9 @@
       </div>
     </div>
 
-    <!-- PAGE 11 -->
+    <!-- ============================
+     PAGE 11: SECRET LETTER
+============================ -->
     <div class="page" id="pg11">
       <span class="section-badge">💌 SECRET</span>
       <h2 class="section-title">A Letter Just For You</h2>
@@ -2369,7 +2474,9 @@
       </button>
     </div>
 
-    <!-- PAGE 12 -->
+    <!-- ============================
+     PAGE 12: CERTIFICATE
+============================ -->
     <div class="page" id="pg12">
       <span class="section-badge">🏆 OFFICIAL</span>
       <h2 class="section-title">Friendship Certificate</h2>
@@ -2424,7 +2531,9 @@
       </div>
     </div>
 
-    <!-- PAGE 13 -->
+    <!-- ============================
+     PAGE 13: FINAL EMOTIONAL
+============================ -->
     <div class="page" id="pg13">
       <canvas
         id="final-stars-canvas"
@@ -2466,6 +2575,7 @@
           </button>
         </div>
       </div>
+      <!-- Floating particles -->
       <div
         id="final-particles"
         style="position: absolute; inset: 0; pointer-events: none; z-index: 1"
@@ -2523,7 +2633,7 @@
       /* ===================== BG ===================== */
       (function spawnBg() {
         const bg = document.getElementById("bg-canvas");
-        ["🌸", "🌺", "💮", "🌼", "💕"].forEach((e) => {
+        ["🌸", "🌺", "💮", "🌼", "💕"].forEach((e, i) => {
           const el = document.createElement("span");
           el.className = "bg-petal";
           el.textContent = e;
@@ -2571,11 +2681,15 @@
         const next = document.getElementById(PAGES[n]);
         prev.classList.remove("active");
         prev.classList.add("exit-left");
-        setTimeout(() => prev.classList.remove("exit-left"), 700);
+        setTimeout(() => {
+          prev.classList.remove("exit-left");
+        }, 700);
         next.classList.add("active");
+        // dots
         document
           .querySelectorAll(".p-dot")
           .forEach((d, i) => d.classList.toggle("active", i === n));
+        // nav arrows — hide on pages 0 and 1 (they have their own buttons)
         const showArrows = n >= 2;
         const prevBtn = document.getElementById("prev-btn");
         const nextBtn = document.getElementById("next-btn");
@@ -2608,7 +2722,7 @@
         }
       }
 
-      /* ===================== PAGE 0 ===================== */
+      /* ===================== PAGE 0: LANDING ===================== */
       (function () {
         const bar = document.getElementById("p0-bar");
         const btnRow = document.getElementById("p0-btn-row");
@@ -2630,6 +2744,7 @@
             setTimeout(nextLine, 600);
           });
         }
+        // Animate bar
         let w = 0;
         const bi = setInterval(() => {
           w += 1;
@@ -2639,10 +2754,11 @@
         setTimeout(nextLine, 200);
       })();
 
-      /* ===================== PAGE 1: INTRO ===================== */
+      /* ===================== PAGE 1: INTRO CINEMATIC ===================== */
+      // Intro hearts
       (function () {
         const wrap = document.getElementById("intro-hearts-bg");
-        ["❤️", "💖", "💕", "💗", "💓"].forEach((e) => {
+        ["❤️", "💖", "💕", "💗", "💓"].forEach((e, i) => {
           for (let j = 0; j < 3; j++) {
             const el = document.createElement("span");
             el.className = "fh";
@@ -2653,6 +2769,7 @@
         });
       })();
 
+      // Build calendar
       (function () {
         const grid = document.getElementById("cal-grid");
         ["S", "M", "T", "W", "T", "F", "S"].forEach((d) => {
@@ -2687,6 +2804,8 @@
           const s = document.getElementById(id);
           if (s) s.classList.add("on");
         }
+
+        // Scene 1: typewriter
         showScene("s1");
         await new Promise((res) =>
           typewrite(
@@ -2697,13 +2816,19 @@
           ),
         );
         await delay(800);
+
+        // Scene 2: memory found
         showScene("s2");
         await delay(2200);
+
+        // Scene 3: calendar
         showScene("s3");
         await delay(2800);
+
+        // Scene 4: counters (animate from 0)
         showScene("s4");
-        const now = new Date(),
-          d = calcDiff(START, now);
+        const now = new Date();
+        const d = calcDiff(START, now);
         const targets = {
           months: d.months,
           days: d.days,
@@ -2718,11 +2843,13 @@
           minutes: "i-minutes",
           seconds: "i-seconds",
         };
+        // Animate each from 0
         Object.keys(targets).forEach((key) => {
           const el = document.getElementById(elems[key]);
           let cur2 = 0;
           const target = targets[key];
-          const step = Math.ceil(target / 60);
+          const steps = 60;
+          const step = Math.ceil(target / steps);
           const iv = setInterval(() => {
             cur2 += step;
             if (cur2 >= target) {
@@ -2740,6 +2867,8 @@
         }, 1000);
         await delay(5000);
         clearInterval(introCounterInterval);
+
+        // Scene 5: story
         showScene("s5");
         const storyLines = [
           "We laugh like idiots.",
@@ -2770,6 +2899,8 @@
           );
         });
         await delay(6500);
+
+        // Scene 6: welcome
         showScene("s6");
       }
 
@@ -2808,7 +2939,10 @@
           e: "🤝",
           t: "When things fell apart you were like oye don't worry mai hu na.",
         },
-        { e: "💖", t: "You cares me like own brother." },
+        {
+          e: "💖",
+          t: "You cares me like own brother.",
+        },
         {
           e: "✨",
           t: "Talking to you makes boring things feel like an adventure somehow.",
@@ -2825,7 +2959,10 @@
           e: "🌟",
           t: "Life is just better when you are around. Can't explain it. It just is.",
         },
-        { e: "🤍", t: "You care me like own elder sister." },
+        {
+          e: "🤍",
+          t: "You care me like own elder sister.",
+        },
         {
           e: "🛡️",
           t: "You never let me feel alone even when I was being dramatic about stuff.",
@@ -2834,12 +2971,18 @@
           e: "⚡",
           t: "Your energy is crazy. You makes everything more alive somehow.",
         },
-        { e: "🌸", t: "You are the safest place for me to say anything." },
+        {
+          e: "🌸",
+          t: "You are the safest place for me to say anything.",
+        },
         {
           e: "🦁",
           t: "You are stronger than you thinks. Way stronger. I've seen it.",
         },
-        { e: "💛", t: "Your heart is made of gold bro no cap." },
+        {
+          e: "💛",
+          t: "Your heart is made of gold bro no cap.",
+        },
         {
           e: "🌻",
           t: "This friendship is one of the best things that ever happened to me.",
@@ -2847,7 +2990,7 @@
       ];
       (function () {
         const g = document.getElementById("special-grid");
-        reasons.forEach((r) => {
+        reasons.forEach((r, i) => {
           const c = document.createElement("div");
           c.className = "sc";
           c.innerHTML = `<div class="sc-num">${r.e}</div><div class="sc-text">${r.t}</div>`;
@@ -2860,8 +3003,9 @@
       function startMainCounters() {
         if (counterStarted) return;
         counterStarted = true;
-        const now = new Date(),
-          d = calcDiff(START, now);
+        const now = new Date();
+        const d = calcDiff(START, now);
+        // Animate from 0
         const fields = [
           ["m-months", d.months],
           ["m-days", d.days],
@@ -2872,7 +3016,8 @@
         fields.forEach(([id, target]) => {
           const el = document.getElementById(id);
           let cur2 = 0;
-          const step = Math.ceil(target / 70);
+          const steps = 70;
+          const step = Math.ceil(target / steps);
           const iv = setInterval(() => {
             cur2 += step;
             if (cur2 >= target) {
@@ -2905,7 +3050,7 @@
         {
           i: "⭐",
           t: "The First Real Conversation",
-          m: "I still remember the first time we actually talked — not just 'hi' stuff. Something about it felt different. Like finding a door you didn't know existed.",
+          m: 'I still remember the first time we actually talked — not just "hi" stuff. Something about it felt different. Like finding a door you didn\'t know existed.',
         },
         {
           i: "💫",
@@ -2955,7 +3100,7 @@
         {
           i: "💌",
           t: "Every Single Message",
-          m: "Every 'hey', every voice note, every random thing you sent — each one was saying: I'm thinking of you.",
+          m: 'Every "hey", every voice note, every random thing you sent — each one was saying: I\'m thinking of you.',
         },
         {
           i: "🌈",
@@ -3079,7 +3224,8 @@
         document.getElementById("memory-popup").classList.remove("open");
       }
 
-      /* ===================== SUNFLOWER GARDEN — FIXED ===================== */
+      /* ===================== SUNFLOWER GARDEN ===================== */
+      /* ===================== SUNFLOWER GARDEN ===================== */
       const sfMsgs = [
         "You deserve every happiness in this world. All of it. 🌟",
         "You are stronger than you think. You've proven it so many times.",
@@ -3122,24 +3268,29 @@
         }, 500);
 
         const garden = document.getElementById("sun-garden");
-        garden.classList.add("show");
+        garden.style.display = "flex";
 
         const wrap = document.getElementById("sf-canvas-wrap");
+        const W = window.innerWidth,
+          H = window.innerHeight;
 
-        // Sunflower sizes with counts
+        // Generate sunflowers: mix of small (1.4rem), medium (2.4rem), big (4rem)
         const sizes = [
-          { fs: "1.6rem", count: 20 },
-          { fs: "2.6rem", count: 15 },
-          { fs: "4rem", count: 8 },
-          { fs: "5.5rem", count: 4 },
+          { fs: "1.4rem", count: 18 },
+          { fs: "2.4rem", count: 14 },
+          { fs: "3.8rem", count: 8 },
+          { fs: "5rem", count: 4 },
         ];
 
+        let idx = 0;
         const all = [];
         sizes.forEach(({ fs, count }) => {
-          for (let i = 0; i < count; i++) all.push({ fs });
+          for (let i = 0; i < count; i++) {
+            all.push({ fs, i: idx++ });
+          }
         });
 
-        // Fisher-Yates shuffle
+        // Shuffle
         for (let i = all.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [all[i], all[j]] = [all[j], all[i]];
@@ -3150,46 +3301,27 @@
           el.className = "sf-item sway";
           el.textContent = "🌻";
 
-          const rot = ((Math.random() - 0.5) * 28).toFixed(1);
+          const rot = (Math.random() - 0.5) * 28;
           const swayDur = (2.5 + Math.random() * 2).toFixed(1) + "s";
-          const swayDel = (Math.random() * 2).toFixed(1) + "s";
-          const popDur = (0.45 + Math.random() * 0.4).toFixed(2) + "s";
-          const popDel = (order * 0.06).toFixed(2) + "s";
+          const swayDelay = (Math.random() * 2).toFixed(1) + "s";
+          const dur = (0.5 + Math.random() * 0.4).toFixed(2) + "s";
+          const del = (order * 0.065).toFixed(2) + "s";
 
-          // ── KEY FIX ──────────────────────────────────────────────────────
-          // Use percentage-based positions instead of pixel math.
-          // The old code used:  parseFloat("1.4rem") * 1.6  = 1.44 (not px!)
-          // as a padding value, producing near-zero padding and broken coords.
-          // Percentages always work regardless of when the element becomes visible.
-          const leftPct = (2 + Math.random() * 92).toFixed(1); // 2 – 94 %
-          const topPct = (2 + Math.random() * 68).toFixed(1); // 2 – 70 % (leaves room for msg)
-          // ─────────────────────────────────────────────────────────────────
+          // Random position with padding so they stay inside
+          const pad = parseFloat(item.fs) * 1.6;
+          const left = pad + Math.random() * (W - pad * 2);
+          const top = pad + Math.random() * (H - pad * 2 - 80); // leave room for msg box
 
-          el.style.cssText =
-            "font-size:" +
-            item.fs +
-            ";" +
-            "left:" +
-            leftPct +
-            "%;" +
-            "top:" +
-            topPct +
-            "%;" +
-            "--r:" +
-            rot +
-            "deg;" +
-            "--dur:" +
-            popDur +
-            ";" +
-            "--del:" +
-            popDel +
-            ";" +
-            "--swayDur:" +
-            swayDur +
-            ";" +
-            "--swayDelay:" +
-            swayDel +
-            ";";
+          el.style.cssText = [
+            `font-size:${item.fs}`,
+            `left:${left}px`,
+            `top:${top}px`,
+            `--r:${rot}deg`,
+            `--dur:${dur}`,
+            `--del:${del}`,
+            `--swayDur:${swayDur}`,
+            `--swayDelay:${swayDelay}`,
+          ].join(";");
 
           const msgIdx = order % sfMsgs.length;
           el.addEventListener("click", () => showSfMsg(msgIdx));
@@ -3201,17 +3333,17 @@
           wrap.appendChild(el);
         });
 
-        // Show message box shortly after first flowers appear
+        // Show msg box and next btn after bloom
+        const msgBox = document.getElementById("sf-msg");
+        const nextBtn = document.getElementById("sf-next-btn");
         setTimeout(() => {
-          document.getElementById("sf-msg").classList.add("show");
-        }, 700);
-
-        // Show "Next" button after all flowers have popped
+          msgBox.classList.add("show");
+        }, 800);
         setTimeout(
           () => {
-            document.getElementById("sf-next-btn").style.opacity = "1";
+            nextBtn.style.opacity = "1";
           },
-          all.length * 60 + 1000,
+          all.length * 65 + 800,
         );
       }
 
@@ -3305,7 +3437,7 @@
         });
         buildQuizDots();
       }
-      function answerQ(idx) {
+      function answerQ(idx, btn) {
         if (qAnswered) return;
         qAnswered = true;
         const qd = quizData[curQ];
@@ -3460,7 +3592,7 @@
         }, 3000);
       }
 
-      /* ===================== FINAL ===================== */
+      /* ===================== FINAL SECTION ===================== */
       function drawFinalStars() {
         const canvas = document.getElementById("final-stars-canvas"),
           ctx = canvas.getContext("2d");
@@ -3521,6 +3653,15 @@
       window.addEventListener("resize", resizeC);
       resizeC();
       function launchConfetti(dur = 5000) {
+        const colors = [
+          "#FF4D6D",
+          "#FFE66D",
+          "#FF85A1",
+          "#DFF6FF",
+          "#E8C4F9",
+          "#FFD6E7",
+          "#ffffff",
+        ];
         const shapes = ["❤️", "💖", "✨", "🌸", "⭐", "💛", "🌻"];
         cParts = [];
         for (let i = 0; i < 200; i++)
@@ -3577,6 +3718,9 @@
             setTimeout(() => h.remove(), 2400);
           }, i * 150);
       }
+
+      /* ===================== INIT ===================== */
+      // Page 0 shows on load — arrows hidden via CSS (opacity:0 on prev-btn by default)
     </script>
   </body>
 </html>
