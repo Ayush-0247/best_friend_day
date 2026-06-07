@@ -2712,7 +2712,7 @@
           drawConstellationStars();
           buildConstellation();
         }
-        if (n === 12) {
+        if (n === 13) {
           drawFinalStars();
           startFinalAnimation();
         }
@@ -3622,7 +3622,7 @@
           el.textContent = items[i % items.length];
           const rot = (Math.random() - 0.5) * 30;
           el.style.cssText = `left:${Math.random() * 95}%;top:${Math.random() * 90}%;--dur:${4 + Math.random() * 5}s;--delay:${Math.random() * 4}s;--rot:${rot}deg;`;
-          console.log("flower", left, top);
+          //   console.log("flower", left, top);
           wrap.appendChild(el);
         }
       }
