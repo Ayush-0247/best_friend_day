@@ -1036,6 +1036,8 @@
         inset: 0;
         overflow: hidden;
         pointer-events: none;
+        width: 100%;
+        height: 100%;
       }
       .sf-item {
         position: absolute;
@@ -1068,10 +1070,8 @@
       }
       /* idle sway after bloom */
       .sf-item.sway {
-        animation:
-          sfPop var(--dur) var(--del) forwards cubic-bezier(0.34, 1.56, 0.64, 1),
-          sfSway var(--swayDur) calc(var(--dur) + var(--del)) var(--swayDelay)
-            infinite ease-in-out;
+        animation: sfPop var(--dur) var(--del) forwards
+          cubic-bezier(0.34, 1.56, 0.64, 1);
       }
       @keyframes sfSway {
         0%,
@@ -2194,7 +2194,7 @@
         <div id="sf-canvas-wrap"></div>
         <div id="sf-msg">Tap any sunflower 🌻</div>
         <button class="btn-main" id="sf-next-btn" onclick="nextPage()">
-          🏔 Lets go to Uttarakhand →
+          🏔 Uttarakhand →
         </button>
       </div>
     </div>
@@ -2764,6 +2764,7 @@
             el.className = "fh";
             el.textContent = e;
             el.style.cssText = `left:${Math.random() * 100}%;--dur:${4 + Math.random() * 4}s;--delay:${Math.random() * 4}s`;
+            //  console.log("flower", left, top);
             wrap.appendChild(el);
           }
         });
@@ -3050,102 +3051,102 @@
         {
           i: "⭐",
           t: "The First Real Conversation",
-          m: 'I still remember the first time we actually talked — not just "hi" stuff. Something about it felt different. Like finding a door you didn\'t know existed.',
+          m: 'I still remember the first time we actually talked. It was "Ayush tum kha se ho" and then our talks never stoped.',
         },
         {
           i: "💫",
           t: "Becoming Best Friends",
-          m: "The moment I realised you weren't just a friend. You were the kind you keep. The kind that becomes family without you even noticing.",
+          m: "",
         },
         {
           i: "🌙",
           t: "Late Night Talks",
-          m: "Those conversations that started at night and somehow reached 2am. Where everything felt safe to say.",
+          m: "",
         },
         {
           i: "🌸",
           t: "Tough Times Together",
-          m: "The days when everything felt heavy. You didn't make it lighter — you just stayed. And that was everything.",
+          m: "",
         },
         {
           i: "😂",
           t: "Laughing Until It Hurt",
-          m: "The completely unhinged conversations. The jokes that made no sense. The laughing until we couldn't breathe. Those are my favourite.",
+          m: "",
         },
         {
           i: "🍕",
           t: "Food Conversations",
-          m: "Half our best conversations were about food. And somehow those ended up being the most important ones.",
+          m: "",
         },
         {
           i: "🏔",
           t: "Your Mountains",
-          m: "The way you talk about Uttarakhand — the mountains, the air, the peace. I feel like I've been there just from how you describe it.",
+          m: "",
         },
         {
           i: "🌻",
           t: "Your Sunflower Energy",
-          m: "Like a sunflower, you always turn toward the light. Even on the darkest days.",
+          m: ".",
         },
         {
           i: "🤝",
           t: "When We Had Arguments",
-          m: "We argued. Real ones. But we always came back. That's how I know this is real.",
+          m: "",
         },
         {
           i: "🌟",
           t: "Your Support For Me",
-          m: "You believed in me when I couldn't. You showed up when it mattered. That changes a person.",
+          m: "",
         },
         {
           i: "💌",
           t: "Every Single Message",
-          m: 'Every "hey", every voice note, every random thing you sent — each one was saying: I\'m thinking of you.',
+          m: ".",
         },
         {
           i: "🌈",
           t: "The Brighter Days",
-          m: "After every storm, you were there making everything feel a little more colourful.",
+          m: "",
         },
         {
           i: "✨",
           t: "Future Plans",
-          m: "All the things we said we'd do someday. I want every single one of them to happen for you.",
+          m: "",
         },
         {
           i: "💝",
           t: "Your Caring Heart",
-          m: "You feel things so deeply. Sometimes too deeply. But that heart of yours is one of the most beautiful things I know.",
+          m: "",
         },
         {
           i: "🎉",
           t: "Celebrating You",
-          m: "Every win you got, I celebrated louder than anyone. Because you deserve to be cheered for.",
+          m: "",
         },
         {
           i: "🫂",
           t: "The Hug I Owe You",
-          m: "One day I'll give you the biggest hug. Until then — consider this whole thing my warm embrace.",
+          m: ".",
         },
         {
           i: "🌙",
           t: "Growing Together",
-          m: "We both changed. But somehow we changed in ways that made us closer. That's not luck. That's real.",
+          m: "",
         },
         {
           i: "💫",
           t: "Small Acts of Kindness",
-          m: "The check-ins. The kind words when I least expected them. They added up to something huge.",
+          m: "",
         },
         {
           i: "🏕️",
           t: "Comfortable Silences",
-          m: "When we didn't need to say anything and it was still okay. Those are the rarest friendships.",
+          m: "",
         },
         {
           i: "⭐",
           t: "This Very Moment",
-          m: "Right now, you reading this — this is a memory too. I made this to say: you are seen, you are loved, you matter.",
+          m: "",
         },
       ];
       const starPos = [
@@ -3268,9 +3269,10 @@
         }, 500);
 
         const garden = document.getElementById("sun-garden");
-        garden.style.display = "flex";
+        garden.classList.add("show");
 
         const wrap = document.getElementById("sf-canvas-wrap");
+        console.log(wrap);
         const W = window.innerWidth,
           H = window.innerHeight;
 
@@ -3329,7 +3331,7 @@
             e.preventDefault();
             showSfMsg(msgIdx);
           });
-
+          console.log("flower", left, top);
           wrap.appendChild(el);
         });
 
@@ -3624,6 +3626,7 @@
           el.textContent = items[i % items.length];
           const rot = (Math.random() - 0.5) * 30;
           el.style.cssText = `left:${Math.random() * 95}%;top:${Math.random() * 90}%;--dur:${4 + Math.random() * 5}s;--delay:${Math.random() * 4}s;--rot:${rot}deg;`;
+          console.log("flower", left, top);
           wrap.appendChild(el);
         }
       }
@@ -3720,7 +3723,7 @@
       }
 
       /* ===================== INIT ===================== */
-      // Page 0 shows on load — arrows hidden via CSS (opacity:0 on prev-btn by default)
+      // Page 0 shows on load — arrows hidden via CSS (opacity:0 on prev-btn by default
     </script>
   </body>
 </html>
