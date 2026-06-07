@@ -1714,10 +1714,6 @@
     </style>
   </head>
   <body>
-    <!-- Cursor -->
-    <div id="cursor"></div>
-    <div id="cursor-ring"></div>
-
     <!-- BG Canvas -->
     <div id="bg-canvas" aria-hidden="true"></div>
 
@@ -3278,10 +3274,10 @@
 
         // Generate sunflowers: mix of small (1.4rem), medium (2.4rem), big (4rem)
         const sizes = [
-          { fs: "1.4rem", count: 18 },
-          { fs: "2.4rem", count: 14 },
-          { fs: "3.8rem", count: 8 },
-          { fs: "5rem", count: 4 },
+          { fs: "1.4rem", count: 300 },
+          { fs: "2.4rem", count: 250 },
+          { fs: "3.8rem", count: 200 },
+          { fs: "5rem", count: 175 },
         ];
 
         let idx = 0;
@@ -3306,8 +3302,8 @@
           const rot = (Math.random() - 0.5) * 28;
           const swayDur = (2.5 + Math.random() * 2).toFixed(1) + "s";
           const swayDelay = (Math.random() * 2).toFixed(1) + "s";
-          const dur = (0.5 + Math.random() * 0.4).toFixed(2) + "s";
-          const del = (order * 0.065).toFixed(2) + "s";
+          const dur = (0.2 + Math.random() * 0.2).toFixed(2) + "s";
+          const del = (order * 0.01).toFixed(2) + "s";
 
           // Random position with padding so they stay inside
           const pad = parseFloat(item.fs) * 1.6;
