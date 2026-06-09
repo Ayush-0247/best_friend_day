@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>Happy Best Friends Day, Ananya 💖</title>
+    <title>Happy Best Friends Day, shreya 💖</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Dancing+Script:wght@600;700&family=Nunito:wght@400;600;700;800&family=Pacifico&display=swap"
       rel="stylesheet"
@@ -1734,7 +1734,10 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+        transition:
+          transform 0.2s,
+          background 0.2s,
+          box-shadow 0.2s;
         position: relative;
         overflow: hidden;
       }
@@ -1745,15 +1748,21 @@
       }
       #music-icon {
         font-size: 1.15rem;
-        transition: transform 0.3s, opacity 0.3s;
+        transition:
+          transform 0.3s,
+          opacity 0.3s;
         display: inline-block;
       }
       #music-toggle.playing #music-icon {
         animation: rotateMusic 4s linear infinite;
       }
       @keyframes rotateMusic {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
       }
 
       /* Equalizer Animation */
@@ -1779,13 +1788,26 @@
         transform-origin: bottom;
         animation: eqAnim 1s ease-in-out infinite alternate;
       }
-      .bar-1 { animation-delay: 0.1s; animation-duration: 0.8s; }
-      .bar-2 { animation-delay: 0.3s; animation-duration: 0.5s; }
-      .bar-3 { animation-delay: 0s; animation-duration: 0.7s; }
-      
+      .bar-1 {
+        animation-delay: 0.1s;
+        animation-duration: 0.8s;
+      }
+      .bar-2 {
+        animation-delay: 0.3s;
+        animation-duration: 0.5s;
+      }
+      .bar-3 {
+        animation-delay: 0s;
+        animation-duration: 0.7s;
+      }
+
       @keyframes eqAnim {
-        0% { transform: scaleY(0.25); }
-        100% { transform: scaleY(1); }
+        0% {
+          transform: scaleY(0.25);
+        }
+        100% {
+          transform: scaleY(1);
+        }
       }
     </style>
   </head>
@@ -1793,7 +1815,11 @@
     <!-- Music Player -->
     <!-- Music Attribution: "Carefree" by Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License -->
     <div id="music-player">
-      <button id="music-toggle" onclick="toggleMusic()" aria-label="Toggle Music">
+      <button
+        id="music-toggle"
+        onclick="toggleMusic()"
+        aria-label="Toggle Music"
+      >
         <div class="eq-container">
           <span class="eq-bar bar-1"></span>
           <span class="eq-bar bar-2"></span>
@@ -1802,7 +1828,10 @@
         <span id="music-icon">🎵</span>
       </button>
       <audio id="bg-music" loop autoplay>
-        <source src="https://upload.wikimedia.org/wikipedia/commons/5/58/Kevin_MacLeod_-_Carefree.ogg" type="audio/ogg">
+        <source
+          src="https://upload.wikimedia.org/wikipedia/commons/5/58/Kevin_MacLeod_-_Carefree.ogg"
+          type="audio/ogg"
+        />
         Your browser does not support the audio element.
       </audio>
     </div>
@@ -1829,7 +1858,7 @@
         <button class="lclose" onclick="closeLetter()">✕</button>
         <div class="ldate">24th October, 2024 — The Day It Began 💖</div>
         <div class="lbody">
-          <p>Dear Ananya, My Bestie Sister,</p>
+          <p>Dear shreya, My Bestie girlfriend,</p>
 
           <p>
             You are a very special person in my life. Thank you for always being
@@ -1849,7 +1878,7 @@
           <div class="lsign">
             With all the love I have,<br />
             Always in your corner 💖<br />
-            — Your Bestie Bhai 🫶
+            — Your Bestie 🫶
           </div>
         </div>
       </div>
@@ -1881,7 +1910,7 @@
     <div class="page active" id="pg0">
       <div class="p0-hero-hearts">💖</div>
       <h1 class="p0-title">
-        Happy Best Friends Day<br /><span>My Bestie Sister 💖</span>
+        Happy Best Friends Day<br /><span>My Bestie girlfriend 💖</span>
       </h1>
       <p class="p0-sub" id="p0-tw"></p>
       <div class="load-bar-wrap">
@@ -1889,7 +1918,7 @@
       </div>
       <div id="p0-btn-row" style="opacity: 0; margin-top: 1.8rem">
         <button class="btn-main" onclick="goPage(1)">
-          💌 See What Your Own Bhai Sent You 🫂🫂
+          💌 See What Your Own friend Sent You 🫂🫂
         </button>
       </div>
     </div>
@@ -1973,7 +2002,7 @@
             animation: pulseGlow 1.5s infinite;
           "
         >
-          Welcome, Ananya!
+          Welcome, shreya!
         </p>
         <p class="intro-sub" style="margin: 0.5rem 0 1.5rem">
           Only for my pryi choti behan 💖
@@ -1988,7 +2017,7 @@
     <div class="page" id="pg2">
       <span class="hero-hearts">💖</span>
       <h1 class="hero-title">
-        Happy Best Friends Day<br /><span>Bestie Sister</span>
+        Happy Best Friends Day<br /><span>Bestie girlfriend</span>
       </h1>
       <p class="hero-sub"><span id="hero-tw"></span></p>
       <button class="btn-main" onclick="nextPage()">🌸 Meet My Bestie →</button>
@@ -2005,7 +2034,7 @@
           <span class="aicon">💫</span>
           <div>
             <div class="akey">Name</div>
-            <div class="aval">Ananya Karnawal</div>
+            <div class="aval">shreya Karnawal</div>
           </div>
         </div>
         <div class="about-row">
@@ -2417,7 +2446,7 @@
             "
           >
             The land of gods, glaciers, and golden sunsets. Your home runs in
-            your veins, Ananya.
+            your veins, shreya.
           </p>
           <!-- Place names -->
           <div class="place-ribbon">
@@ -2478,7 +2507,7 @@
     <div class="page" id="pg10">
       <span class="section-badge">🎯 FUN QUIZ</span>
       <h2 class="section-title">How Well Do You Know Yourself?</h2>
-      <p class="section-sub">Answer honestly — this is about you, Ananya!</p>
+      <p class="section-sub">Answer honestly — this is about you, shreya!</p>
       <div class="quiz-wrap">
         <div class="qprog" id="quiz-dots"></div>
         <div id="quiz-area">
@@ -2541,7 +2570,7 @@
       <div class="env-wrap" onclick="openLetter()">
         <div class="envelope">
           <div class="env-icon">💌</div>
-          <div class="env-label">For Bestie Sister Only ❤️</div>
+          <div class="env-label">For Bestie girlfriend Only ❤️</div>
           <div class="env-seal">🔒</div>
         </div>
       </div>
@@ -2561,10 +2590,10 @@
         <div style="font-size: 1.5rem; animation: hb 1.5s infinite">💖</div>
         <div class="cert-title">Certificate of Irreplaceable Friendship</div>
         <div class="cert-presented">This is proudly presented to</div>
-        <div class="cert-name">Ananya Karnawal</div>
+        <div class="cert-name">shreya Karnawal</div>
         <div class="cert-desc">
-          For being an extraordinary best friend, a beloved little sister, an
-          unwavering supporter, a source of warmth and laughter — and an
+          For being an extraordinary best friend, a beloved little girlfriend,
+          an unwavering supporter, a source of warmth and laughter — and an
           irreplaceable presence in this life.
         </div>
         <div
@@ -2580,7 +2609,7 @@
         <div class="cert-footer">
           <div class="cert-sig">
             <div class="cert-sig-name">Best Friend Forever</div>
-            <div class="cert-sig-label">YOUR BESTIE BHAI</div>
+            <div class="cert-sig-label">YOUR BESTIE friend</div>
           </div>
           <div style="font-size: 2rem">🌻</div>
           <div class="cert-sig">
@@ -2626,13 +2655,13 @@
           </p>
         </div>
         <p class="farewell-letter" id="farewell-letter" data-delay="3200">
-          Ananya — if you're reading this till the end, I want you to know one
+          shreya — if you're reading this till the end, I want you to know one
           thing:<br />
           I didn't make this because I had to.<br />
           I made this because you deserve to feel special <br />
           Special Very Special<br /><br />
-          You are not just my best friend or my bestie sister. You are the kind
-          of person the world needs more of.<br />
+          You are not just my best friend or my bestie girlfriend. You are the
+          kind of person the world needs more of.<br />
           Don't ever let anyone dim that light of yours. Not even yourself.<br /><br />
           <span style="color: rgba(255, 230, 109, 0.9)"
             >Keep shining, Bestie. 🌟</span
@@ -2640,7 +2669,7 @@
         </p>
         <span class="big-heart" id="final-heart" data-delay="4500">💖</span>
         <p class="final-big" id="final-text" data-delay="4800">
-          HAPPY BEST FRIENDS DAY<br />ANANYA ❤️
+          HAPPY BEST FRIENDS DAY<br />shreya ❤️
         </p>
         <div
           style="margin-top: 1.5rem; opacity: 0; transition: opacity 1s"
@@ -2675,11 +2704,14 @@
       }
 
       function playMusic() {
-        bgMusic.play().then(() => {
-          musicToggle.classList.add("playing");
-        }).catch((err) => {
-          console.log("Audio autoplay prevented or error playing:", err);
-        });
+        bgMusic
+          .play()
+          .then(() => {
+            musicToggle.classList.add("playing");
+          })
+          .catch((err) => {
+            console.log("Audio autoplay prevented or error playing:", err);
+          });
       }
 
       function pauseMusic() {
@@ -3014,16 +3046,18 @@
         });
         const bc = document.getElementById("badge-container");
         bc.innerHTML = "";
-        ["Best Friend ❤️", "Chosen Sister ❤️", "Forever ❤️"].forEach((t, i) => {
-          const el = document.createElement("span");
-          el.className = "badge";
-          el.textContent = t;
-          bc.appendChild(el);
-          setTimeout(
-            () => el.classList.add("on"),
-            storyLines.length * 700 + i * 400,
-          );
-        });
+        ["Best Friend ❤️", "Chosen girlfriend ❤️", "Forever ❤️"].forEach(
+          (t, i) => {
+            const el = document.createElement("span");
+            el.className = "badge";
+            el.textContent = t;
+            bc.appendChild(el);
+            setTimeout(
+              () => el.classList.add("on"),
+              storyLines.length * 700 + i * 400,
+            );
+          },
+        );
         await delay(6500);
 
         // Scene 6: welcome
@@ -3079,7 +3113,7 @@
         },
         {
           e: "👭",
-          t: "you are my little sister. I want to protect you from everything bad in this world.",
+          t: "you are my little girlfriend. I want to protect you from everything bad in this world.",
         },
         {
           e: "🌟",
@@ -3087,7 +3121,7 @@
         },
         {
           e: "🤍",
-          t: "You care me like own elder sister.",
+          t: "You care me like own elder girlfriend.",
         },
         {
           e: "🛡️",
@@ -3375,7 +3409,7 @@
         "Be gentle with yourself. You deserve the love you give to others.",
         "Your dreams are valid. Your feelings are valid. YOU are valid. Always.",
         "I hope today brings you something that makes your heart feel full. 🌟",
-        "Happy Best Friends Day, bestie sister. Today is about you. 💖",
+        "Happy Best Friends Day, bestie girlfriend. Today is about you. 💖",
         "You are so loved. More than you know. Never doubt that.",
         "The world is lucky to have you. And so am I. 🌻",
       ];
@@ -3486,21 +3520,21 @@
       /* ===================== QUIZ ===================== */
       const quizData = [
         {
-          q: "Ananya's home state is?",
+          q: "shreya's home state is?",
           opts: ["Maharashtra", "Uttarakhand 🏔", "Rajasthan", "Delhi"],
           correct: 1,
           explain:
             "Uttarakhand — land of mountains, rivers and golden sunsets! 🌄",
         },
         {
-          q: "What's one of Ananya's favourite things in nature?",
+          q: "What's one of shreya's favourite things in nature?",
           opts: ["Roses", "Sunflowers 🌻", "Cactus", "Tulips"],
           correct: 1,
           explain:
             "SUNFLOWERS! She and sunflowers were made for each other. 🌻",
         },
         {
-          q: "Best way to describe Ananya's personality?",
+          q: "Best way to describe shreya's personality?",
           opts: [
             "Boring and quiet",
             "Funny, caring and energetic ⚡",
@@ -3666,11 +3700,11 @@
         ctx.fillText("This certificate is proudly presented to", 450, 210);
         ctx.fillStyle = "#FF4D6D";
         ctx.font = "italic bold 44px Georgia";
-        ctx.fillText("Ananya Karnawal", 450, 272);
+        ctx.fillText("shreya Karnawal", 450, 272);
         ctx.fillStyle = "#7D4E6A";
         ctx.font = "14px Arial";
         [
-          "For being an extraordinary best friend, a beloved little sister,",
+          "For being an extraordinary best friend, a beloved little girlfriend,",
           "an unwavering supporter, a source of warmth and laughter,",
           "and an irreplaceable presence in this life — now and forever.",
         ].forEach((l, i) => ctx.fillText(l, 450, 325 + i * 22));
@@ -3693,7 +3727,7 @@
         ctx.fillText("Best Friend Forever", 160, 500);
         ctx.fillStyle = "#7D4E6A";
         ctx.font = "10px Arial";
-        ctx.fillText("YOUR BESTIE BHAI", 160, 518);
+        ctx.fillText("YOUR BESTIE friend", 160, 518);
         ctx.textAlign = "center";
         ctx.font = "32px serif";
         ctx.fillText("🌻", 450, 495);
@@ -3710,7 +3744,7 @@
         ctx.font = "10px Arial";
         ctx.fillText("DATE ISSUED", 720, 518);
         const link = document.createElement("a");
-        link.download = "Ananya-Friendship-Certificate.png";
+        link.download = "shreya-Friendship-Certificate.png";
         link.href = canvas.toDataURL("image/png");
         link.click();
         setTimeout(() => {
