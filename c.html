@@ -1,0 +1,1637 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>Two Months Since We Met</title>
+    <meta
+      name="description"
+      content="A quiet, interactive record of two months."
+    />
+
+    <style>
+      /* ============================================================
+   TOKENS
+   ============================================================ */
+      @import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Karla:wght@300;400;500&display=swap");
+
+      :root {
+        --ivory: #f6f1e7;
+        --cream: #efe6d3;
+        --peach: #f0c9a8;
+        --champagne: #e6cfa3;
+        --blush: #e3b3ae;
+        --lavender: #a793ab;
+        --gold: #c9974f;
+        --moonlight: #7c8db0;
+        --navy: #12141f;
+        --navy-2: #191d2c;
+
+        --ink: #2a2620;
+        --ink-soft: rgba(42, 38, 32, 0.68);
+        --paper: rgba(255, 251, 244, 0.9);
+
+        --scene-bg-a: var(--navy);
+        --scene-bg-b: var(--navy-2);
+        --scene-accent: var(--gold);
+
+        --ease-soft: cubic-bezier(0.22, 0.68, 0, 1);
+        --ease-slow: cubic-bezier(0.16, 0.84, 0.24, 1);
+
+        --display: "Fraunces", "Iowan Old Style", serif;
+        --body-font: "Karla", -apple-system, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+      }
+
+      body {
+        font-family: var(--body-font);
+        background: var(--scene-bg-a);
+        color: var(--ivory);
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        cursor: default;
+      }
+
+      /* ============================================================
+   ACCESSIBILITY
+   ============================================================ */
+      .skip-link {
+        position: absolute;
+        left: -999px;
+        top: 0;
+        background: var(--ivory);
+        color: var(--ink);
+        padding: 0.75em 1.25em;
+        z-index: 999;
+        font-family: var(--body-font);
+        border-radius: 0 0 6px 0;
+      }
+      .skip-link:focus {
+        left: 0;
+      }
+
+      :focus-visible {
+        outline: 2px solid var(--champagne);
+        outline-offset: 4px;
+        border-radius: 2px;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        padding: 0;
+        margin: -1px;
+      }
+
+      /* ============================================================
+   BACKGROUND CANVAS (dust / fireflies / stars)
+   ============================================================ */
+      #atmosphere {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 0;
+        pointer-events: none;
+        transition: filter 1.8s var(--ease-slow);
+      }
+
+      .grain {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        opacity: 0.035;
+        mix-blend-mode: overlay;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      }
+
+      /* ============================================================
+   CONTROLS
+   ============================================================ */
+      #controls {
+        position: fixed;
+        top: 1.5rem;
+        right: 1.5rem;
+        z-index: 60;
+        display: flex;
+        gap: 0.6rem;
+        align-items: center;
+      }
+      .ctrl-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1px solid rgba(246, 241, 231, 0.25);
+        background: rgba(18, 20, 31, 0.35);
+        backdrop-filter: blur(8px);
+        color: var(--ivory);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition:
+          transform 0.6s var(--ease-soft),
+          background 0.4s ease,
+          border-color 0.4s ease;
+      }
+      .ctrl-btn:hover {
+        transform: scale(1.08);
+        border-color: rgba(246, 241, 231, 0.6);
+      }
+      .ctrl-btn svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      #progress-rail {
+        position: fixed;
+        left: 1.4rem;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 60;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .progress-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: rgba(246, 241, 231, 0.25);
+        transition:
+          background 0.6s ease,
+          transform 0.6s var(--ease-soft),
+          height 0.6s var(--ease-soft);
+      }
+      .progress-dot.active {
+        background: var(--champagne);
+        height: 22px;
+        border-radius: 4px;
+      }
+      @media (max-width: 720px) {
+        #progress-rail {
+          display: none;
+        }
+      }
+
+      /* ============================================================
+   SCENE STRUCTURE
+   ============================================================ */
+      main {
+        position: relative;
+        z-index: 5;
+      }
+
+      .scene {
+        min-height: 100vh;
+        min-height: 100svh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 8vh 6vw;
+        position: relative;
+      }
+
+      .scene-eyebrow {
+        font-family: var(--body-font);
+        font-size: 0.72rem;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        color: var(--scene-accent);
+        opacity: 0;
+        transform: translateY(14px) blur(4px);
+        transition:
+          opacity 1.1s var(--ease-slow),
+          transform 1.1s var(--ease-slow);
+        margin-bottom: 1.4rem;
+      }
+
+      .scene-title {
+        font-family: var(--display);
+        font-weight: 400;
+        font-size: clamp(2rem, 5.4vw, 4.6rem);
+        line-height: 1.12;
+        letter-spacing: -0.01em;
+        max-width: 15ch;
+        opacity: 0;
+        transform: translateY(26px);
+        filter: blur(6px);
+        transition:
+          opacity 1.5s var(--ease-slow),
+          transform 1.5s var(--ease-slow),
+          filter 1.5s var(--ease-slow);
+      }
+
+      .scene-body {
+        font-family: var(--body-font);
+        font-weight: 300;
+        font-size: clamp(1rem, 1.6vw, 1.22rem);
+        line-height: 1.9;
+        color: var(--ink-soft-inv, rgba(246, 241, 231, 0.78));
+        max-width: 34ch;
+        margin-top: 1.6rem;
+        opacity: 0;
+        transform: translateY(20px);
+        transition:
+          opacity 1.3s 0.15s var(--ease-slow),
+          transform 1.3s 0.15s var(--ease-slow);
+      }
+
+      .scene.is-visible .scene-eyebrow {
+        opacity: 1;
+        transform: none;
+      }
+      .scene.is-visible .scene-title {
+        opacity: 1;
+        transform: none;
+        filter: blur(0);
+      }
+      .scene.is-visible .scene-body {
+        opacity: 1;
+        transform: none;
+      }
+
+      .scene-mark {
+        position: absolute;
+        bottom: 6vh;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.68rem;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: rgba(246, 241, 231, 0.4);
+        opacity: 0;
+        transition: opacity 1.6s 0.6s ease;
+      }
+      .scene.is-visible .scene-mark {
+        opacity: 1;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .scene-eyebrow,
+        .scene-title,
+        .scene-body {
+          transition-duration: 0.01s !important;
+          filter: none !important;
+        }
+      }
+
+      /* ---------- Scene 0 : Hero ---------- */
+      #scene-hero {
+        position: relative;
+      }
+      .hero-inner {
+        position: relative;
+        z-index: 2;
+      }
+      .hero-title {
+        font-family: var(--display);
+        font-weight: 300;
+        font-style: italic;
+        font-size: clamp(2.4rem, 7vw, 5.6rem);
+        line-height: 1.05;
+        opacity: 0;
+        transform: translateY(36px) scale(0.98);
+        filter: blur(10px);
+        animation: heroReveal 2.4s var(--ease-slow) 0.3s forwards;
+      }
+      .hero-sub {
+        margin-top: 1.6rem;
+        font-family: var(--body-font);
+        font-weight: 300;
+        font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+        color: rgba(246, 241, 231, 0.65);
+        max-width: 32ch;
+        letter-spacing: 0.01em;
+        opacity: 0;
+        animation: fadeUp 1.8s var(--ease-slow) 1.6s forwards;
+      }
+      @keyframes heroReveal {
+        to {
+          opacity: 1;
+          transform: none;
+          filter: blur(0);
+        }
+      }
+      @keyframes fadeUp {
+        to {
+          opacity: 1;
+        }
+      }
+
+      .begin-hint {
+        margin-top: 4.2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.6rem;
+        opacity: 0;
+        animation: fadeUp 1.8s var(--ease-slow) 2.6s forwards;
+        cursor: pointer;
+        background: none;
+        border: none;
+        color: inherit;
+        font-family: var(--body-font);
+      }
+      .begin-hint span {
+        font-size: 0.72rem;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: rgba(246, 241, 231, 0.55);
+      }
+      .begin-line {
+        width: 1px;
+        height: 44px;
+        background: linear-gradient(
+          to bottom,
+          rgba(246, 241, 231, 0.7),
+          transparent
+        );
+        animation: lineBreathe 2.6s ease-in-out infinite;
+      }
+      @keyframes lineBreathe {
+        0%,
+        100% {
+          opacity: 0.35;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      /* ---------- Fireflies (memory notes) ---------- */
+      .firefly {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 224, 168, 1) 0%,
+          rgba(255, 224, 168, 0.15) 60%,
+          transparent 75%
+        );
+        box-shadow: 0 0 14px 4px rgba(255, 224, 168, 0.5);
+        z-index: 8;
+        cursor: pointer;
+        pointer-events: auto;
+        transition:
+          transform 0.5s var(--ease-soft),
+          opacity 1.2s ease;
+      }
+      .firefly:focus-visible {
+        outline: 2px solid var(--champagne);
+        outline-offset: 6px;
+        border-radius: 50%;
+      }
+      .firefly.collected {
+        filter: saturate(1.4);
+      }
+
+      .note-card {
+        position: fixed;
+        z-index: 70;
+        max-width: min(300px, 80vw);
+        background: var(--paper);
+        color: var(--ink);
+        border-radius: 10px;
+        padding: 1.1rem 1.3rem;
+        font-family: var(--display);
+        font-style: italic;
+        font-size: 1rem;
+        line-height: 1.55;
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+        opacity: 0;
+        transform: translateY(10px) scale(0.96);
+        transition:
+          opacity 0.6s var(--ease-soft),
+          transform 0.6s var(--ease-soft);
+        pointer-events: none;
+      }
+      .note-card.visible {
+        opacity: 1;
+        transform: none;
+        pointer-events: auto;
+      }
+      .note-card::after {
+        content: "tap anywhere to close";
+        display: block;
+        margin-top: 0.7rem;
+        font-family: var(--body-font);
+        font-style: normal;
+        font-size: 0.65rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(42, 38, 32, 0.4);
+      }
+
+      /* ---------- Easter egg reveal text ---------- */
+      .secret {
+        position: fixed;
+        left: 50%;
+        bottom: 8vh;
+        transform: translate(-50%, 14px);
+        z-index: 75;
+        font-family: var(--display);
+        font-style: italic;
+        font-size: clamp(1rem, 2vw, 1.3rem);
+        color: var(--champagne);
+        background: rgba(18, 20, 31, 0.55);
+        backdrop-filter: blur(10px);
+        padding: 0.9rem 1.6rem;
+        border-radius: 999px;
+        border: 1px solid rgba(246, 241, 231, 0.15);
+        opacity: 0;
+        transition:
+          opacity 1s var(--ease-slow),
+          transform 1s var(--ease-slow);
+        pointer-events: none;
+        text-align: center;
+        max-width: 80vw;
+      }
+      .secret.show {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+
+      /* ---------- Petal drag object ---------- */
+      #petal {
+        position: fixed;
+        width: 26px;
+        height: 26px;
+        z-index: 9;
+        cursor: grab;
+        touch-action: none;
+      }
+      #petal.dragging {
+        cursor: grabbing;
+      }
+
+      /* ---------- Scene 3 laughter doodle ---------- */
+      .laugh-wrap {
+        position: relative;
+      }
+      .laugh-wrap svg {
+        display: block;
+        margin: 0 auto 1.4rem;
+        width: 120px;
+        height: 60px;
+        opacity: 0;
+      }
+      .scene.is-visible .laugh-wrap svg {
+        opacity: 1;
+        transition: opacity 1.4s 0.3s ease;
+      }
+      .laugh-wrap path {
+        stroke-dasharray: 220;
+        stroke-dashoffset: 220;
+        transition: stroke-dashoffset 1.6s 0.5s var(--ease-slow);
+      }
+      .scene.is-visible .laugh-wrap path {
+        stroke-dashoffset: 0;
+      }
+
+      /* ---------- Scene 4 connection : merging orbs ---------- */
+      .orb-field {
+        position: relative;
+        width: 220px;
+        height: 120px;
+        margin-bottom: 1.6rem;
+      }
+      .orb {
+        position: absolute;
+        top: 30px;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        filter: blur(2px);
+        mix-blend-mode: screen;
+        transition:
+          transform 2.2s var(--ease-slow),
+          opacity 1.6s ease;
+        opacity: 0.85;
+      }
+      .orb-a {
+        left: 20px;
+        background: radial-gradient(
+          circle at 35% 35%,
+          var(--peach),
+          transparent 70%
+        );
+      }
+      .orb-b {
+        right: 20px;
+        background: radial-gradient(
+          circle at 65% 35%,
+          var(--lavender),
+          transparent 70%
+        );
+      }
+      .scene.is-visible .orb-a {
+        transform: translateX(38px);
+      }
+      .scene.is-visible .orb-b {
+        transform: translateX(-38px);
+      }
+
+      /* ---------- Scene 5 gratitude : gold rays ---------- */
+      #scene-gratitude {
+        overflow: hidden;
+      }
+      .rays {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        opacity: 0.5;
+        background: conic-gradient(
+          from 200deg at 50% 0%,
+          transparent 0deg,
+          rgba(201, 151, 79, 0.18) 8deg,
+          transparent 20deg,
+          transparent 40deg,
+          rgba(201, 151, 79, 0.14) 48deg,
+          transparent 60deg
+        );
+        animation: rayDrift 40s linear infinite;
+      }
+      @keyframes rayDrift {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* ---------- Scene 6 hope : aurora + stars ---------- */
+      #scene-hope {
+        overflow: hidden;
+      }
+      .aurora {
+        position: absolute;
+        inset: -10%;
+        z-index: 0;
+        opacity: 0.55;
+        filter: blur(40px);
+        background:
+          radial-gradient(
+            40% 30% at 30% 20%,
+            rgba(124, 141, 176, 0.5),
+            transparent 60%
+          ),
+          radial-gradient(
+            35% 25% at 70% 30%,
+            rgba(167, 147, 171, 0.45),
+            transparent 60%
+          ),
+          radial-gradient(
+            30% 20% at 50% 10%,
+            rgba(230, 207, 163, 0.3),
+            transparent 60%
+          );
+        animation: auroraShift 18s ease-in-out infinite alternate;
+      }
+      @keyframes auroraShift {
+        0% {
+          transform: translateY(0) scale(1);
+        }
+        100% {
+          transform: translateY(3%) scale(1.06);
+        }
+      }
+
+      /* ---------- Ending scene ---------- */
+      #scene-end {
+        position: relative;
+      }
+      .end-actions {
+        margin-top: 2.4rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        opacity: 0;
+        transform: translateY(16px);
+        transition:
+          opacity 1.4s 0.3s ease,
+          transform 1.4s 0.3s var(--ease-soft);
+      }
+      .scene.is-visible .end-actions {
+        opacity: 1;
+        transform: none;
+      }
+      .pill-btn {
+        font-family: var(--body-font);
+        font-size: 0.82rem;
+        letter-spacing: 0.06em;
+        padding: 0.85rem 1.8rem;
+        border-radius: 999px;
+        cursor: pointer;
+        background: transparent;
+        color: var(--ivory);
+        border: 1px solid rgba(246, 241, 231, 0.35);
+        transition:
+          background 0.5s ease,
+          border-color 0.5s ease,
+          transform 0.5s var(--ease-soft);
+      }
+      .pill-btn:hover {
+        background: rgba(246, 241, 231, 0.1);
+        border-color: rgba(246, 241, 231, 0.7);
+        transform: translateY(-2px);
+      }
+
+      /* ---------- Volume popover ---------- */
+      #vol-pop {
+        position: fixed;
+        top: 5.2rem;
+        right: 1.5rem;
+        z-index: 59;
+        background: rgba(18, 20, 31, 0.55);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(246, 241, 231, 0.15);
+        border-radius: 12px;
+        padding: 0.9rem 0.7rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-8px);
+        transition:
+          opacity 0.4s ease,
+          transform 0.4s var(--ease-soft);
+      }
+      #vol-pop.open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+      }
+      #vol-slider {
+        writing-mode: vertical-lr;
+        direction: rtl;
+        width: 6px;
+        height: 80px;
+        accent-color: var(--champagne);
+      }
+
+      footer.credit {
+        position: relative;
+        z-index: 5;
+        text-align: center;
+        padding: 3rem 1rem 4rem;
+        font-size: 0.7rem;
+        letter-spacing: 0.1em;
+        color: rgba(246, 241, 231, 0.35);
+      }
+    </style>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <canvas id="atmosphere" aria-hidden="true"></canvas>
+    <div class="grain" aria-hidden="true"></div>
+
+    <div id="controls">
+      <button
+        class="ctrl-btn"
+        id="mute-btn"
+        aria-pressed="false"
+        aria-label="Play ambient sound"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          id="mute-icon"
+        >
+          <path d="M4 9v6h4l5 5V4L8 9H4z" />
+          <line x1="16" y1="8" x2="21" y2="15" id="x1" />
+          <line x1="21" y1="8" x2="16" y2="15" id="x2" />
+        </svg>
+      </button>
+      <button
+        class="ctrl-btn"
+        id="vol-btn"
+        aria-label="Volume"
+        aria-expanded="false"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+        >
+          <path d="M4 9v6h4l5 5V4L8 9H4z" />
+          <path d="M16 8a5 5 0 010 8" />
+        </svg>
+      </button>
+    </div>
+    <div id="vol-pop">
+      <input
+        type="range"
+        id="vol-slider"
+        min="0"
+        max="100"
+        value="45"
+        aria-label="Volume level"
+      />
+    </div>
+
+    <div id="progress-rail" aria-hidden="true">
+      <div class="progress-dot" data-scene="0"></div>
+      <div class="progress-dot" data-scene="1"></div>
+      <div class="progress-dot" data-scene="2"></div>
+      <div class="progress-dot" data-scene="3"></div>
+      <div class="progress-dot" data-scene="4"></div>
+      <div class="progress-dot" data-scene="5"></div>
+      <div class="progress-dot" data-scene="6"></div>
+    </div>
+
+    <div id="petal" aria-hidden="true">
+      <svg viewBox="0 0 26 26">
+        <path
+          d="M13 2c6 3 9 8 9 11-3 4-9 6-9 11-3-3-9-6-9-11 0-3 3-8 9-11z"
+          fill="#e3b3ae"
+          opacity="0.85"
+        />
+      </svg>
+    </div>
+
+    <div
+      class="note-card"
+      id="note-card"
+      role="dialog"
+      aria-live="polite"
+      tabindex="-1"
+    ></div>
+    <div class="secret" id="secret-toast" role="status"></div>
+
+    <main id="main">
+      <!-- SCENE 0 — HERO / CURIOSITY -->
+      <section
+        class="scene"
+        id="scene-hero"
+        data-eyebrow="two people, sixty-one days"
+        data-bg="navy"
+        tabindex="-1"
+      >
+        <div class="hero-inner">
+          <h1 class="hero-title">Two months<br />since we met.</h1>
+          <p class="hero-sub">
+            I've been trying to write this for a week. I kept deleting it. So
+            I'm just going to say it plainly, one small piece at a time.
+          </p>
+          <button
+            class="begin-hint"
+            id="begin-btn"
+            aria-label="Begin the story"
+          >
+            <span>Begin</span>
+            <span class="begin-line" aria-hidden="true"></span>
+          </button>
+        </div>
+      </section>
+
+      <!-- SCENE 1 — COMFORT -->
+      <section
+        class="scene"
+        id="scene-comfort"
+        data-eyebrow="week one"
+        data-bg="ember"
+      >
+        <p class="scene-eyebrow">Week one</p>
+        <h2 class="scene-title">It got easier every day.</h2>
+        <p class="scene-body">
+          The first few days I wasn't sure what this was. We were just talking.
+          That's it. But somehow the talking got easier every day. I stopped
+          thinking about what to say next. I just said it.
+        </p>
+        <span class="scene-mark">01</span>
+      </section>
+
+      <!-- SCENE 2 — LAUGHTER -->
+      <section
+        class="scene"
+        id="scene-laughter"
+        data-eyebrow="somewhere in the middle"
+        data-bg="peach"
+      >
+        <div class="laugh-wrap">
+          <svg viewBox="0 0 120 60" aria-hidden="true">
+            <path
+              d="M6 40 Q 30 8, 60 30 T 114 20"
+              fill="none"
+              stroke="#c9974f"
+              stroke-width="2.4"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+        <p class="scene-eyebrow">Somewhere in the middle</p>
+        <h2 class="scene-title">
+          You have a laugh that shows up at the worst times.
+        </h2>
+        <p class="scene-body">
+          In the middle of a serious sentence. Over something that wasn't even
+          that funny. I started saying things just to hear it again.
+        </p>
+        <span class="scene-mark">02</span>
+      </section>
+
+      <!-- SCENE 3 — CONNECTION -->
+      <section
+        class="scene"
+        id="scene-connection"
+        data-eyebrow="without noticing"
+        data-bg="lavender"
+      >
+        <div class="orb-field" aria-hidden="true">
+          <div class="orb orb-a"></div>
+          <div class="orb orb-b"></div>
+        </div>
+        <p class="scene-eyebrow">Without noticing</p>
+        <h2 class="scene-title">
+          "Talking to you" became "telling you things."
+        </h2>
+        <p class="scene-body">
+          The small stuff. The dumb stuff. The stuff I don't usually say out
+          loud. I didn't plan for that to happen. It just did, somewhere between
+          one ordinary day and the next.
+        </p>
+        <span class="scene-mark">03</span>
+      </section>
+
+      <!-- SCENE 4 — GRATITUDE -->
+      <section
+        class="scene"
+        id="scene-gratitude"
+        data-eyebrow="what i actually mean"
+        data-bg="gold"
+      >
+        <div class="rays" aria-hidden="true"></div>
+        <p class="scene-eyebrow">What I actually mean to say</p>
+        <h2 class="scene-title">
+          Thank you for two months of easy conversations.
+        </h2>
+        <p class="scene-body">
+          I don't know how to thank someone for just being easy to talk to. So
+          I'm not going to try to make this poetic. I'm just going to say it
+          straight: thank you.
+        </p>
+        <span class="scene-mark">04</span>
+      </section>
+
+      <!-- SCENE 5 — HOPE -->
+      <section
+        class="scene"
+        id="scene-hope"
+        data-eyebrow="looking ahead, a little"
+        data-bg="moonlight"
+      >
+        <div class="aurora" aria-hidden="true"></div>
+        <p class="scene-eyebrow">Looking ahead, a little</p>
+        <h2 class="scene-title">I don't know what this becomes.</h2>
+        <p class="scene-body">
+          I'm not trying to figure that out tonight. I just know I like where
+          it's at right now, and I'm curious, in a good way, about where it goes
+          next.
+        </p>
+        <span class="scene-mark">05</span>
+      </section>
+
+      <!-- SCENE 6 — ENDING -->
+      <section
+        class="scene"
+        id="scene-end"
+        data-eyebrow="sixty-one days, and counting"
+        data-bg="navy2"
+      >
+        <p class="scene-eyebrow">Sixty-one days, and counting</p>
+        <h2 class="scene-title">Here's to whatever comes after this.</h2>
+        <p class="scene-body">
+          Two months since we met. Not a big anniversary, not a grand occasion.
+          Just two strangers who somehow became something worth writing down.
+        </p>
+        <div class="end-actions">
+          <button class="pill-btn" id="replay-btn">Watch it again</button>
+          <button class="pill-btn" id="fireflies-btn">
+            Fireflies found: <span id="firefly-count">0</span> / 5
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="credit">
+      made quietly, for you · press <kbd style="font-family: inherit">H</kbd> if
+      you're curious
+    </footer>
+
+    <script>
+      (function () {
+        "use strict";
+
+        /* ============================================================
+   SETUP
+   ============================================================ */
+        const reduceMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+        const scenes = Array.from(document.querySelectorAll(".scene"));
+        const canvas = document.getElementById("atmosphere");
+        const ctx = canvas.getContext("2d");
+        let W = 0,
+          H = 0,
+          DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+        function resize() {
+          W = window.innerWidth;
+          H = window.innerHeight;
+          canvas.width = W * DPR;
+          canvas.height = H * DPR;
+          canvas.style.width = W + "px";
+          canvas.style.height = H + "px";
+          ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+        }
+        window.addEventListener("resize", resize);
+        resize();
+
+        /* ============================================================
+   SCENE PALETTES
+   ============================================================ */
+        const PALETTES = {
+          navy: {
+            bg: ["#12141f", "#191d2c"],
+            particle: "246,241,231",
+            density: 60,
+            mode: "stars",
+          },
+          ember: {
+            bg: ["#241b17", "#3a241c"],
+            particle: "240,201,168",
+            density: 40,
+            mode: "dust",
+          },
+          peach: {
+            bg: ["#2e2016", "#402a1c"],
+            particle: "240,201,168",
+            density: 34,
+            mode: "dust",
+          },
+          lavender: {
+            bg: ["#221c2b", "#2c2338"],
+            particle: "167,147,171",
+            density: 44,
+            mode: "dust",
+          },
+          gold: {
+            bg: ["#241a10", "#3a2712"],
+            particle: "201,151,79",
+            density: 50,
+            mode: "rays",
+          },
+          moonlight: {
+            bg: ["#0f1626", "#1a2540"],
+            particle: "124,141,176",
+            density: 80,
+            mode: "stars",
+          },
+          navy2: {
+            bg: ["#0c0e17", "#141828"],
+            particle: "230,207,163",
+            density: 70,
+            mode: "fireflydrift",
+          },
+        };
+
+        let currentPalette = PALETTES.navy;
+        let targetPalette = PALETTES.navy;
+        let blend = 1;
+
+        function setPalette(key) {
+          targetPalette = PALETTES[key] || PALETTES.navy;
+          blend = 0;
+        }
+
+        function lerpColor(a, b, t) {
+          const pa = hexToRgb(a),
+            pb = hexToRgb(b);
+          const r = Math.round(pa[0] + (pb[0] - pa[0]) * t);
+          const g = Math.round(pa[1] + (pb[1] - pa[1]) * t);
+          const bl = Math.round(pa[2] + (pb[2] - pa[2]) * t);
+          return `rgb(${r},${g},${bl})`;
+        }
+        function hexToRgb(hex) {
+          const h = hex.replace("#", "");
+          return [
+            parseInt(h.substring(0, 2), 16),
+            parseInt(h.substring(2, 4), 16),
+            parseInt(h.substring(4, 6), 16),
+          ];
+        }
+
+        /* ============================================================
+   PARTICLES
+   ============================================================ */
+        let particles = [];
+        function seedParticles(n) {
+          particles = [];
+          for (let i = 0; i < n; i++) {
+            particles.push({
+              x: Math.random() * W,
+              y: Math.random() * H,
+              r: Math.random() * 1.6 + 0.4,
+              baseA: Math.random() * 0.5 + 0.15,
+              speedY: Math.random() * 0.12 + 0.03,
+              speedX: (Math.random() - 0.5) * 0.06,
+              twinkle: Math.random() * Math.PI * 2,
+              twinkleSpeed: Math.random() * 0.02 + 0.005,
+            });
+          }
+        }
+        seedParticles(70);
+
+        let mouseX = W / 2,
+          mouseY = H / 2;
+        window.addEventListener(
+          "pointermove",
+          (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+          },
+          { passive: true },
+        );
+
+        let rafId;
+        function tick() {
+          ctx.clearRect(0, 0, W, H);
+
+          if (blend < 1) {
+            blend = Math.min(1, blend + 0.008);
+          }
+          const bgTop = lerpColor(
+            currentPalette.bg[0],
+            targetPalette.bg[0],
+            blend,
+          );
+          const bgBot = lerpColor(
+            currentPalette.bg[1],
+            targetPalette.bg[1],
+            blend,
+          );
+          if (blend >= 1) currentPalette = targetPalette;
+
+          const grad = ctx.createLinearGradient(0, 0, 0, H);
+          grad.addColorStop(0, bgTop);
+          grad.addColorStop(1, bgBot);
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, W, H);
+
+          const rgb = targetPalette.particle;
+          const parallaxX = (mouseX - W / 2) * 0.01;
+          const parallaxY = (mouseY - H / 2) * 0.01;
+
+          for (const p of particles) {
+            if (!reduceMotion) {
+              p.y -= p.speedY;
+              p.x += p.speedX;
+              p.twinkle += p.twinkleSpeed;
+              if (p.y < -10) {
+                p.y = H + 10;
+                p.x = Math.random() * W;
+              }
+              if (p.x < -10) p.x = W + 10;
+              if (p.x > W + 10) p.x = -10;
+            }
+            const a = p.baseA * (0.6 + 0.4 * Math.sin(p.twinkle));
+            ctx.beginPath();
+            ctx.fillStyle = `rgba(${rgb},${a})`;
+            ctx.arc(p.x + parallaxX, p.y + parallaxY, p.r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          rafId = requestAnimationFrame(tick);
+        }
+        tick();
+
+        /* ============================================================
+   SCROLL-DRIVEN SCENE REVEAL
+   ============================================================ */
+        const dots = Array.from(document.querySelectorAll(".progress-dot"));
+
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting && entry.intersectionRatio > 0.45) {
+                entry.target.classList.add("is-visible");
+                const bgKey = entry.target.dataset.bg;
+                if (bgKey) setPalette(bgKey);
+                const idx = scenes.indexOf(entry.target);
+                dots.forEach((d, i) => d.classList.toggle("active", i === idx));
+                announce(entry.target.dataset.eyebrow || "");
+              }
+            });
+          },
+          { threshold: [0.45] },
+        );
+
+        scenes.forEach((s) => io.observe(s));
+
+        const liveRegion = document.createElement("div");
+        liveRegion.setAttribute("aria-live", "polite");
+        liveRegion.className = "sr-only";
+        document.body.appendChild(liveRegion);
+        let announceTimer;
+        function announce(text) {
+          clearTimeout(announceTimer);
+          announceTimer = setTimeout(() => {
+            liveRegion.textContent = "Scene: " + text;
+          }, 400);
+        }
+
+        document.getElementById("begin-btn").addEventListener("click", () => {
+          scenes[1].scrollIntoView({
+            behavior: reduceMotion ? "auto" : "smooth",
+          });
+        });
+
+        document.getElementById("replay-btn").addEventListener("click", () => {
+          scenes[0].scrollIntoView({
+            behavior: reduceMotion ? "auto" : "smooth",
+          });
+        });
+
+        /* ============================================================
+   AMBIENT AUDIO — Web Audio API, generated (no files)
+   ============================================================ */
+        let audioCtx,
+          masterGain,
+          padGain,
+          started = false,
+          muted = true;
+        function initAudio() {
+          if (started) return;
+          started = true;
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          masterGain = audioCtx.createGain();
+          masterGain.gain.value = 0.45;
+          masterGain.connect(audioCtx.destination);
+
+          padGain = audioCtx.createGain();
+          padGain.gain.value = 0.0001;
+          padGain.connect(masterGain);
+
+          // soft evolving pad: a few detuned sine/triangle oscillators
+          const notes = [130.81, 164.81, 196.0, 246.94]; // C3 E3 G3 B3 - warm major7
+          notes.forEach((freq, i) => {
+            const osc = audioCtx.createOscillator();
+            osc.type = i % 2 === 0 ? "sine" : "triangle";
+            osc.frequency.value = freq;
+            const lfo = audioCtx.createOscillator();
+            lfo.frequency.value = 0.05 + i * 0.01;
+            const lfoGain = audioCtx.createGain();
+            lfoGain.gain.value = 2.2;
+            lfo.connect(lfoGain);
+            lfoGain.connect(osc.frequency);
+            lfo.start();
+            const oGain = audioCtx.createGain();
+            oGain.gain.value = 0.06 + (i === 0 ? 0.05 : 0);
+            osc.connect(oGain);
+            oGain.connect(padGain);
+            osc.start();
+          });
+
+          padGain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 3);
+
+          // gentle wind: filtered noise
+          const bufferSize = 2 * audioCtx.sampleRate;
+          const noiseBuffer = audioCtx.createBuffer(
+            1,
+            bufferSize,
+            audioCtx.sampleRate,
+          );
+          const output = noiseBuffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            output[i] = Math.random() * 2 - 1;
+          }
+          const noise = audioCtx.createBufferSource();
+          noise.buffer = noiseBuffer;
+          noise.loop = true;
+          const noiseFilter = audioCtx.createBiquadFilter();
+          noiseFilter.type = "bandpass";
+          noiseFilter.frequency.value = 600;
+          noiseFilter.Q.value = 0.6;
+          const noiseGain = audioCtx.createGain();
+          noiseGain.gain.value = 0.02;
+          noise.connect(noiseFilter);
+          noiseFilter.connect(noiseGain);
+          noiseGain.connect(masterGain);
+          noise.start();
+        }
+
+        function playChime() {
+          if (!started || muted) return;
+          const o = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          o.type = "sine";
+          o.frequency.value = 880 + Math.random() * 220;
+          g.gain.value = 0;
+          o.connect(g);
+          g.connect(masterGain);
+          o.start();
+          const t = audioCtx.currentTime;
+          g.gain.linearRampToValueAtTime(0.08, t + 0.05);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + 1.4);
+          o.stop(t + 1.5);
+        }
+
+        const muteBtn = document.getElementById("mute-btn");
+        const x1 = document.getElementById("x1"),
+          x2 = document.getElementById("x2");
+        function setMuted(v) {
+          muted = v;
+          muteBtn.setAttribute("aria-pressed", String(!v));
+          muteBtn.setAttribute(
+            "aria-label",
+            v ? "Play ambient sound" : "Mute ambient sound",
+          );
+          if (masterGain)
+            masterGain.gain.linearRampToValueAtTime(
+              v ? 0 : document.getElementById("vol-slider").value / 100,
+              (audioCtx ? audioCtx.currentTime : 0) + 0.6,
+            );
+          x1.style.opacity = v ? "0" : "1";
+          x2.style.opacity = v ? "0" : "1";
+        }
+        x1.style.opacity = "1";
+        x2.style.opacity = "1";
+
+        muteBtn.addEventListener("click", () => {
+          if (!started) {
+            initAudio();
+            setMuted(false);
+          } else setMuted(!muted);
+        });
+
+        // first interaction anywhere also softly primes audio (but stays muted until user presses play)
+        window.addEventListener(
+          "pointerdown",
+          function primeOnce() {
+            if (!started) initAudio();
+            window.removeEventListener("pointerdown", primeOnce);
+          },
+          { once: true, passive: true },
+        );
+
+        const volBtn = document.getElementById("vol-btn");
+        const volPop = document.getElementById("vol-pop");
+        const volSlider = document.getElementById("vol-slider");
+        volBtn.addEventListener("click", () => {
+          const open = volPop.classList.toggle("open");
+          volBtn.setAttribute("aria-expanded", String(open));
+        });
+        volSlider.addEventListener("input", (e) => {
+          if (!started) initAudio();
+          if (masterGain && !muted) {
+            masterGain.gain.value = e.target.value / 100;
+          }
+        });
+        document.addEventListener("click", (e) => {
+          if (
+            !volPop.contains(e.target) &&
+            e.target !== volBtn &&
+            volPop.classList.contains("open")
+          ) {
+            volPop.classList.remove("open");
+            volBtn.setAttribute("aria-expanded", "false");
+          }
+        });
+
+        /* ============================================================
+   FIREFLIES — hidden memory notes (signature interaction)
+   ============================================================ */
+        const MEMORY_NOTES = [
+          "You texted 'good morning' three days in a row before I admitted I liked it.",
+          "I still don't know why the parking lot story is funny. I laugh anyway.",
+          "You remembered something I said in passing, weeks later. I noticed.",
+          "There was a night we talked about nothing for two hours. Best two hours that week.",
+          "I re-read one of your messages more than once. Just to see it again.",
+        ];
+
+        let collected = 0;
+        const countEl = document.getElementById("firefly-count");
+        const noteCard = document.getElementById("note-card");
+
+        function placeFireflies() {
+          MEMORY_NOTES.forEach((note, i) => {
+            const f = document.createElement("button");
+            f.className = "firefly";
+            f.setAttribute(
+              "aria-label",
+              "A small memory, waiting to be noticed",
+            );
+            f.dataset.note = note;
+            f.dataset.collected = "false";
+            document.body.appendChild(f);
+            positionFirefly(f);
+            animateFirefly(f);
+            f.addEventListener("click", () => revealNote(f));
+            f.addEventListener("keydown", (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                revealNote(f);
+              }
+            });
+          });
+        }
+
+        function positionFirefly(f) {
+          const scene = scenes[Math.floor(Math.random() * scenes.length)];
+          const rect = { top: scene.offsetTop, height: scene.offsetHeight };
+          f._homeY = rect.top + rect.height * (0.2 + Math.random() * 0.6);
+          f._homeX = window.innerWidth * (0.1 + Math.random() * 0.8);
+          f.style.left = f._homeX + "px";
+        }
+
+        function animateFirefly(f) {
+          let t = Math.random() * 100;
+          function loop() {
+            if (!document.body.contains(f)) return;
+            t += 0.008;
+            const docY = f._homeY + Math.sin(t * 1.3) * 26;
+            const screenY = docY - window.scrollY;
+            const x = f._homeX + Math.cos(t) * 30;
+            f.style.transform = `translate(${x - f._homeX}px, ${Math.sin(t * 1.3) * 26}px)`;
+            f.style.top = f._homeY + "px";
+            f.style.opacity =
+              screenY > -40 && screenY < window.innerHeight + 40 ? "1" : "0";
+            if (!reduceMotion) requestAnimationFrame(loop);
+            else f.style.transform = "none";
+          }
+          loop();
+        }
+
+        function revealNote(f) {
+          if (f.dataset.collected === "false") {
+            f.dataset.collected = "true";
+            f.classList.add("collected");
+            collected++;
+            countEl.textContent = collected;
+            playChime();
+          }
+          const r = f.getBoundingClientRect();
+          noteCard.textContent = f.dataset.note;
+          let left = r.left;
+          let top = r.top - 20;
+          if (left + 300 > window.innerWidth) left = window.innerWidth - 320;
+          if (top < 100) top = r.bottom + 20;
+          noteCard.style.left = Math.max(16, left) + "px";
+          noteCard.style.top = top + "px";
+          noteCard.classList.add("visible");
+          noteCard.focus();
+        }
+        document.addEventListener("click", (e) => {
+          if (
+            noteCard.classList.contains("visible") &&
+            !e.target.closest(".firefly")
+          ) {
+            noteCard.classList.remove("visible");
+          }
+        });
+        placeFireflies();
+
+        /* ============================================================
+   EASTER EGGS
+   ============================================================ */
+        const secretToast = document.getElementById("secret-toast");
+        let secretTimer;
+        function showSecret(text, duration = 4200) {
+          clearTimeout(secretTimer);
+          secretToast.textContent = text;
+          secretToast.classList.add("show");
+          secretTimer = setTimeout(
+            () => secretToast.classList.remove("show"),
+            duration,
+          );
+        }
+
+        // 1. Double-click the hero title
+        document
+          .querySelector(".hero-title")
+          .addEventListener("dblclick", () => {
+            showSecret(
+              "okay, honestly? I was nervous to send the first message.",
+            );
+          });
+
+        // 2. Long-press anywhere on the hero scene (1.4s)
+        let pressTimer;
+        const heroScene = document.getElementById("scene-hero");
+        heroScene.addEventListener("pointerdown", () => {
+          pressTimer = setTimeout(() => showSecret("still here. good."), 1400);
+        });
+        ["pointerup", "pointerleave"].forEach((ev) =>
+          heroScene.addEventListener(ev, () => clearTimeout(pressTimer)),
+        );
+
+        // 3. Keyboard shortcut "H" for a hidden line of hope, from anywhere
+        window.addEventListener("keydown", (e) => {
+          if (e.key.toLowerCase() === "h" && !e.metaKey && !e.ctrlKey) {
+            showSecret("h is for hope. also for hello. both feel right.");
+          }
+        });
+
+        // 4. Typing "hi" anywhere sends a small greeting + petal flourish
+        let typedBuffer = "";
+        window.addEventListener("keydown", (e) => {
+          if (e.key.length === 1) {
+            typedBuffer = (typedBuffer + e.key).slice(-2).toLowerCase();
+            if (typedBuffer === "hi") {
+              showSecret("hi. yeah — hi to you too.");
+              burstPetals();
+            }
+          }
+        });
+
+        // 5. Triple-click the footer credit
+        let footerClicks = 0,
+          footerClickTimer;
+        document
+          .querySelector("footer.credit")
+          .addEventListener("click", () => {
+            footerClicks++;
+            clearTimeout(footerClickTimer);
+            footerClickTimer = setTimeout(() => (footerClicks = 0), 700);
+            if (footerClicks === 3) {
+              showSecret(
+                "this whole thing took longer to build than i'll ever admit.",
+              );
+              footerClicks = 0;
+            }
+          });
+
+        // 6. Idle on the ending scene for 6s
+        let idleTimer;
+        const endObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                idleTimer = setTimeout(
+                  () =>
+                    showSecret(
+                      "okay. that's really it. thank you for reading all the way down.",
+                    ),
+                  6000,
+                );
+              } else {
+                clearTimeout(idleTimer);
+              }
+            });
+          },
+          { threshold: 0.6 },
+        );
+        endObserver.observe(document.getElementById("scene-end"));
+
+        // 7. Drag the petal across the screen
+        const petal = document.getElementById("petal");
+        let dragging = false,
+          dragOffset = { x: 0, y: 0 },
+          petalTraveled = 0,
+          petalUsed = false;
+        petal.style.left = "85%";
+        petal.style.top = "18px";
+        petal.addEventListener("pointerdown", (e) => {
+          dragging = true;
+          petal.classList.add("dragging");
+          petal.setPointerCapture(e.pointerId);
+          const r = petal.getBoundingClientRect();
+          dragOffset.x = e.clientX - r.left;
+          dragOffset.y = e.clientY - r.top;
+        });
+        petal.addEventListener("pointermove", (e) => {
+          if (!dragging) return;
+          const nx = e.clientX - dragOffset.x,
+            ny = e.clientY - dragOffset.y;
+          petalTraveled += Math.abs(nx - parseFloat(petal.style.left || 0));
+          petal.style.left = nx + "px";
+          petal.style.top = ny + "px";
+        });
+        window.addEventListener("pointerup", () => {
+          if (dragging && petalTraveled > 400 && !petalUsed) {
+            petalUsed = true;
+            showSecret(
+              "you carried that further than I expected. thank you for that too.",
+            );
+          }
+          dragging = false;
+          petal.classList.remove("dragging");
+          petalTraveled = 0;
+        });
+
+        // 8. Hover the word "laugh" for 2.5s (scene 2 title contains it)
+        (function () {
+          const title = document.querySelector("#scene-laughter .scene-title");
+          let hoverTimer;
+          title.addEventListener("mouseenter", () => {
+            hoverTimer = setTimeout(
+              () =>
+                showSecret("ha. yeah, you know exactly which laugh I mean."),
+              2500,
+            );
+          });
+          title.addEventListener("mouseleave", () => clearTimeout(hoverTimer));
+        })();
+
+        // 9. Arrow-key sequence: Up Up Down Down
+        (function () {
+          let seq = [];
+          const target = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown"];
+          window.addEventListener("keydown", (e) => {
+            if (!e.key.startsWith("Arrow")) return;
+            seq.push(e.key);
+            seq = seq.slice(-4);
+            if (seq.join() === target.join()) {
+              showSecret("found a shortcut. i like that you look for them.");
+            }
+          });
+        })();
+
+        // 10. Collect all 5 fireflies
+        const origRevealNote = revealNote;
+        function checkAllFound() {
+          if (collected === MEMORY_NOTES.length) {
+            setTimeout(
+              () =>
+                showSecret(
+                  "that's every small thing I noticed. there were more — these were just the ones I wrote down.",
+                ),
+              800,
+            );
+          }
+        }
+        document.addEventListener("click", checkAllFound);
+
+        function burstPetals() {
+          if (reduceMotion) return;
+          for (let i = 0; i < 10; i++) {
+            const p = document.createElement("div");
+            p.style.position = "fixed";
+            p.style.left =
+              window.innerWidth / 2 + (Math.random() - 0.5) * 200 + "px";
+            p.style.top = "-20px";
+            p.style.width = "10px";
+            p.style.height = "10px";
+            p.style.borderRadius = "50% 0 50% 50%";
+            p.style.background = ["#e3b3ae", "#c9974f", "#e6cfa3"][i % 3];
+            p.style.opacity = "0.85";
+            p.style.zIndex = "65";
+            p.style.pointerEvents = "none";
+            document.body.appendChild(p);
+            const duration = 3000 + Math.random() * 2000;
+            const drift = (Math.random() - 0.5) * 140;
+            p.animate(
+              [
+                { transform: "translate(0,0) rotate(0deg)", opacity: 0.85 },
+                {
+                  transform: `translate(${drift}px, ${window.innerHeight + 40}px) rotate(360deg)`,
+                  opacity: 0,
+                },
+              ],
+              { duration, easing: "cubic-bezier(.2,.6,.3,1)" },
+            ).onfinish = () => p.remove();
+          }
+        }
+
+        /* ============================================================
+   Reduced-motion: strip heavy animation loops
+   ============================================================ */
+        if (reduceMotion) {
+          document
+            .querySelectorAll(".rays, .aurora")
+            .forEach((el) => (el.style.animation = "none"));
+        }
+      })();
+    </script>
+  </body>
+</html>
