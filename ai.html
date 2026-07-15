@@ -1,0 +1,3178 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Two Months Since We Met</title>
+    <!-- Beautiful typography pairings: Elegant Serif for story, Grotesk for metrics/accents, Inter for UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        /* Premium Color Palette */
+        --warm-ivory: #fdfbf7;
+        --cream: #fbf8f3;
+        --soft-peach: #fcefe3;
+        --champagne: #f3ead3;
+        --blush-pink: #f9e5e6;
+        --muted-lavender: #e8e5ec;
+        --warm-gold: #e5c453;
+        --moonlight-blue: #1a2844;
+        --dark-navy: #060913;
+
+        --font-serif: "Cormorant Garamond", Georgia, serif;
+        --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+        --font-mono: "Space Grotesk", monospace;
+
+        --cursor-color: rgba(229, 196, 83, 0.8);
+        --cursor-halo-color: rgba(229, 196, 83, 0.15);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: var(--dark-navy);
+        color: var(--cream);
+        font-family: var(--font-sans);
+        font-weight: 300;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Canvas Layer */
+      #ambient-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      /* Interactive Fog Cover Layer for Comfort Scene */
+      #fog-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 5;
+        opacity: 0;
+        transition: opacity 1.5s ease;
+        pointer-events: none;
+      }
+      #fog-canvas.active {
+        opacity: 0.95;
+        pointer-events: auto;
+      }
+
+      /* Custom Smooth Cursor */
+      .cursor-dot {
+        width: 6px;
+        height: 6px;
+        background-color: var(--cursor-color);
+        border-radius: 50%;
+        position: fixed;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 9999;
+        transition:
+          width 0.3s,
+          height 0.3s,
+          background-color 0.3s;
+      }
+      .cursor-halo {
+        width: 36px;
+        height: 36px;
+        border: 1px solid var(--cursor-color);
+        background-color: var(--cursor-halo-color);
+        border-radius: 50%;
+        position: fixed;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 9998;
+        /* Custom inertia via JS lerp, but default style handles transition fallback */
+        will-change: transform;
+      }
+      .cursor-lantern .cursor-halo {
+        width: 180px;
+        height: 180px;
+        background: radial-gradient(
+          circle,
+          rgba(229, 196, 83, 0.25) 0%,
+          rgba(229, 196, 83, 0.05) 50%,
+          transparent 100%
+        );
+        border: 1px dashed rgba(229, 196, 83, 0.3);
+      }
+
+      /* Cinematic Layout Container */
+      .cinematic-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      /* Base Scene Styling - Designed for smooth 3D fluid morphing */
+      .scene {
+        position: absolute;
+        width: 100%;
+        max-width: 800px;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        opacity: 0;
+        visibility: hidden;
+        transform: scale(0.95) translateZ(0);
+        filter: blur(10px);
+        transition:
+          opacity 2s cubic-bezier(0.25, 1, 0.5, 1),
+          transform 2s cubic-bezier(0.25, 1, 0.5, 1),
+          filter 2s cubic-bezier(0.25, 1, 0.5, 1),
+          visibility 2s;
+        will-change: opacity, transform, filter;
+      }
+
+      .scene.active {
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1) translateZ(0);
+        filter: blur(0px);
+      }
+
+      .scene.past {
+        opacity: 0;
+        visibility: hidden;
+        transform: scale(1.05) translateZ(0);
+        filter: blur(12px);
+      }
+
+      /* Typography & Flow */
+      .scene-title {
+        font-family: var(--font-serif);
+        font-size: 3.5rem;
+        font-weight: 300;
+        letter-spacing: -0.01em;
+        margin-bottom: 2rem;
+        color: var(--warm-ivory);
+        text-shadow: 0 0 40px rgba(255, 255, 255, 0.08);
+        line-height: 1.15;
+      }
+      @media (max-width: 768px) {
+        .scene-title {
+          font-size: 2.5rem;
+        }
+      }
+
+      .scene-text {
+        font-family: var(--font-serif);
+        font-size: 1.6rem;
+        font-style: italic;
+        font-weight: 300;
+        color: rgba(251, 248, 243, 0.85);
+        max-width: 620px;
+        margin-bottom: 2.5rem;
+        transition:
+          letter-spacing 1s ease,
+          filter 1s ease;
+      }
+      @media (max-width: 768px) {
+        .scene-text {
+          font-size: 1.25rem;
+        }
+      }
+
+      .highlight-letter {
+        position: relative;
+        color: rgba(251, 248, 243, 0.85);
+        transition:
+          color 0.4s ease,
+          text-shadow 0.4s ease;
+        cursor: pointer;
+      }
+      .highlight-letter:hover {
+        color: var(--warm-gold);
+        text-shadow: 0 0 8px var(--warm-gold);
+      }
+
+      /* Long Press Bloomed Text State (Easter Egg #3) */
+      .scene-text.bloomed {
+        letter-spacing: 0.18em;
+        filter: drop-shadow(0 0 4px rgba(229, 196, 83, 0.4));
+        color: var(--warm-ivory);
+      }
+
+      /* Premium Buttons */
+      .btn {
+        background: none;
+        border: 1px solid rgba(251, 248, 243, 0.2);
+        padding: 0.9rem 2.2rem;
+        border-radius: 50px;
+        color: var(--cream);
+        font-family: var(--font-sans);
+        font-size: 0.85rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        cursor: pointer;
+        outline: none;
+        position: relative;
+        overflow: hidden;
+        background-color: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(5px);
+        transition:
+          border-color 0.6s,
+          background-color 0.6s,
+          color 0.6s;
+        animation: slowBreathe 6s infinite ease-in-out;
+      }
+      .btn:hover,
+      .btn:focus-visible {
+        border-color: var(--warm-gold);
+        color: var(--dark-navy);
+        background-color: var(--warm-gold);
+        box-shadow: 0 0 25px rgba(229, 196, 83, 0.25);
+      }
+
+      /* Navigation Overlay */
+      .navigation-controls {
+        position: fixed;
+        bottom: 3.5rem;
+        display: flex;
+        align-items: center;
+        gap: 2.5rem;
+        z-index: 100;
+        opacity: 0;
+        transform: translateY(15px);
+        transition:
+          opacity 1.5s ease 0.5s,
+          transform 1.5s ease 0.5s;
+        pointer-events: none;
+      }
+      .navigation-controls.visible {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      .nav-arrow {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        color: rgba(251, 248, 243, 0.4);
+        transition:
+          color 0.4s,
+          transform 0.4s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .nav-arrow:hover:not(:disabled),
+      .nav-arrow:focus-visible:not(:disabled) {
+        color: var(--warm-gold);
+        transform: scale(1.1);
+      }
+      .nav-arrow:disabled {
+        opacity: 0.15;
+        cursor: not-allowed;
+      }
+
+      .progress-dots {
+        display: flex;
+        gap: 12px;
+      }
+      .dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background-color: rgba(251, 248, 243, 0.2);
+        cursor: pointer;
+        transition:
+          background-color 0.6s,
+          transform 0.6s,
+          box-shadow 0.6s;
+      }
+      .dot.active {
+        background-color: var(--warm-gold);
+        transform: scale(1.4);
+        box-shadow: 0 0 8px var(--warm-gold);
+      }
+
+      /* Utilities & Ambient Controls */
+      .ambient-ui {
+        position: fixed;
+        top: 2rem;
+        right: 2rem;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        opacity: 0;
+        transition: opacity 1.5s ease;
+      }
+      .ambient-ui.visible {
+        opacity: 1;
+      }
+
+      .ui-icon-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: rgba(251, 248, 243, 0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          color 0.4s,
+          transform 0.3s;
+        padding: 5px;
+        position: relative;
+      }
+      .ui-icon-btn:hover,
+      .ui-icon-btn:focus-visible {
+        color: var(--warm-gold);
+        transform: scale(1.05);
+      }
+
+      /* Audio Slider Panel */
+      .audio-slider-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(10px);
+        padding: 6px 12px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transform: translateX(10px);
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          transform 0.4s,
+          opacity 0.4s;
+      }
+      .audio-slider-container.open {
+        transform: translateX(0);
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .volume-slider {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 60px;
+        height: 2px;
+        background: rgba(251, 248, 243, 0.2);
+        outline: none;
+        border-radius: 1px;
+      }
+      .volume-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--warm-gold);
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+      .volume-slider::-webkit-slider-thumb:hover {
+        transform: scale(1.3);
+      }
+
+      /* Ambient LED Indicators for Easter Eggs (Easter Egg Hub) */
+      .egg-indicators {
+        position: fixed;
+        bottom: 2rem;
+        left: 2rem;
+        display: flex;
+        gap: 6px;
+        z-index: 100;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 1.5s ease;
+      }
+      .egg-indicators.visible {
+        opacity: 1;
+      }
+      .egg-led {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: rgba(251, 248, 243, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        position: relative;
+        cursor: help;
+        transition:
+          background-color 1s,
+          box-shadow 1s;
+      }
+      .egg-led.discovered {
+        background-color: var(--warm-gold);
+        box-shadow: 0 0 8px var(--warm-gold);
+      }
+
+      /* Simple elegant tooltip */
+      .egg-led::after {
+        content: attr(data-hint);
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%) translateY(5px);
+        background: rgba(6, 9, 19, 0.9);
+        border: 1px solid rgba(251, 248, 243, 0.15);
+        color: var(--cream);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.65rem;
+        font-family: var(--font-sans);
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          opacity 0.3s,
+          transform 0.3s;
+        z-index: 200;
+      }
+      .egg-led:hover::after {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      /* Toast Notification for Easter Eggs */
+      .egg-toast {
+        position: fixed;
+        bottom: 3.5rem;
+        right: 2rem;
+        background: rgba(10, 17, 40, 0.85);
+        border: 1px solid var(--warm-gold);
+        color: var(--cream);
+        padding: 12px 20px;
+        border-radius: 4px;
+        font-family: var(--font-sans);
+        font-size: 0.8rem;
+        letter-spacing: 0.05em;
+        z-index: 1000;
+        opacity: 0;
+        transform: translateY(15px);
+        transition:
+          opacity 0.5s,
+          transform 0.5s;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .egg-toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .egg-toast-icon {
+        color: var(--warm-gold);
+        animation: pulseChime 2s infinite ease-in-out;
+      }
+
+      /* Ticking Metric Container (Easter Egg #1) */
+      .metrics-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.5rem;
+        margin: 2rem 0;
+        font-family: var(--font-mono);
+      }
+      .metric-box {
+        background: rgba(255, 255, 255, 0.01);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(5px);
+        padding: 0.8rem 1.4rem;
+        border-radius: 8px;
+        min-width: 110px;
+      }
+      .metric-value {
+        font-size: 1.5rem;
+        font-weight: 400;
+        color: var(--warm-gold);
+        display: block;
+      }
+      .metric-label {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: rgba(251, 248, 243, 0.45);
+      }
+
+      /* Scene Specific Sub-Elements */
+      /* Fog instructions */
+      .fog-instructions {
+        font-family: var(--font-sans);
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--warm-gold);
+        opacity: 0.6;
+        margin-top: 1rem;
+        animation: slowBreathe 3s infinite ease-in-out;
+      }
+
+      /* Interactive Star Tracing SVG for Connection Scene */
+      .star-connect-svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 4;
+        pointer-events: none;
+      }
+
+      /* Keyboard Shortcuts Help Button/List */
+      .info-helper-btn {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 100;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: rgba(251, 248, 243, 0.3);
+        font-size: 0.7rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        transition: color 0.4s;
+      }
+      .info-helper-btn:hover {
+        color: var(--warm-gold);
+      }
+
+      /* Modal for shortcuts & discoveries */
+      .ledger-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.95);
+        background: rgba(6, 9, 19, 0.95);
+        border: 1px solid rgba(251, 248, 243, 0.15);
+        padding: 2.5rem;
+        border-radius: 12px;
+        z-index: 2000;
+        width: 90%;
+        max-width: 500px;
+        backdrop-filter: blur(25px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          opacity 0.5s,
+          transform 0.5s;
+      }
+      .ledger-modal.open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      .ledger-title {
+        font-family: var(--font-serif);
+        font-size: 1.8rem;
+        color: var(--warm-gold);
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+      .ledger-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+        max-height: 280px;
+        overflow-y: auto;
+        padding-right: 5px;
+      }
+      /* Custom Scrollbar */
+      .ledger-list::-webkit-scrollbar {
+        width: 4px;
+      }
+      .ledger-list::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .ledger-list::-webkit-scrollbar-thumb {
+        background: rgba(229, 196, 83, 0.3);
+        border-radius: 2px;
+      }
+      .ledger-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px dashed rgba(251, 248, 243, 0.08);
+      }
+      .ledger-item-title {
+        color: var(--cream);
+      }
+      .ledger-item-status {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .ledger-item-status.found {
+        color: var(--warm-gold);
+      }
+      .ledger-item-status.locked {
+        color: rgba(251, 248, 243, 0.25);
+      }
+      .close-ledger-btn {
+        background: none;
+        border: 1px solid rgba(251, 248, 243, 0.15);
+        color: var(--cream);
+        padding: 6px 16px;
+        border-radius: 20px;
+        margin-top: 1.5rem;
+        font-family: var(--font-sans);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        cursor: pointer;
+        width: 100%;
+        transition:
+          background 0.3s,
+          border-color 0.3s;
+      }
+      .close-ledger-btn:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: var(--warm-gold);
+      }
+
+      /* Keyboard hints */
+      .keyboard-hint-overlay {
+        position: fixed;
+        bottom: 2rem;
+        width: 100%;
+        text-align: center;
+        font-size: 0.65rem;
+        color: rgba(251, 248, 243, 0.25);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        pointer-events: none;
+        z-index: 50;
+        opacity: 0;
+        transition: opacity 1.5s ease;
+      }
+      .keyboard-hint-overlay.visible {
+        opacity: 1;
+      }
+
+      /* Stillness overlay screen */
+      .stillness-greetings {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle,
+          rgba(10, 17, 40, 0.4) 0%,
+          rgba(6, 9, 19, 0.9) 100%
+        );
+        z-index: 90;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 2s ease;
+      }
+      .stillness-greetings.active {
+        opacity: 1;
+      }
+      .stillness-message {
+        font-family: var(--font-serif);
+        font-size: 2.2rem;
+        font-style: italic;
+        color: var(--warm-ivory);
+        text-align: center;
+        max-width: 500px;
+        animation: slowBreathe 8s infinite ease-in-out;
+      }
+
+      /* Animations */
+      @keyframes slowBreathe {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+        50% {
+          transform: scale(1.02);
+          opacity: 1;
+        }
+      }
+      @keyframes pulseChime {
+        0%,
+        100% {
+          transform: scale(1);
+          filter: drop-shadow(0 0 0px var(--warm-gold));
+        }
+        50% {
+          transform: scale(1.1);
+          filter: drop-shadow(0 0 6px var(--warm-gold));
+        }
+      }
+
+      /* Accessibility Reduced Motion adjustments */
+      @media (prefers-reduced-motion: reduce) {
+        .scene {
+          transition: opacity 0.5s ease;
+          transform: none !important;
+          filter: none !important;
+        }
+        .dot,
+        .btn,
+        .nav-arrow {
+          animation: none !important;
+        }
+        .cursor-halo {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Background Canvas -->
+    <canvas id="ambient-canvas"></canvas>
+
+    <!-- Custom Cursor elements -->
+    <div class="cursor-dot" id="custom-cursor-dot"></div>
+    <div class="cursor-halo" id="custom-cursor-halo"></div>
+
+    <!-- Interactive Fog Canvas (Scene 2: Comfort) -->
+    <canvas id="fog-canvas"></canvas>
+
+    <!-- Connect Star Constellation SVG (Scene 4: Connection) -->
+    <svg
+      class="star-connect-svg"
+      id="star-connect-svg"
+      viewBox="0 0 1000 1000"
+      preserveAspectRatio="none"
+    ></svg>
+
+    <!-- Stillness Screen (Easter Egg #6) -->
+    <div class="stillness-greetings" id="stillness-screen">
+      <div class="stillness-message">
+        "The world is so busy... Thank you for pausing with me here."
+      </div>
+    </div>
+
+    <!-- Cinematic App View Container -->
+    <main
+      class="cinematic-container"
+      id="app-container"
+      aria-label="Interactive Journey"
+    >
+      <!-- SCENE 0: PRELUDE -->
+      <section class="scene active" id="scene-0" aria-hidden="false">
+        <h1 class="scene-title">Two Months Since We Met</h1>
+        <p class="scene-text">
+          On a day that seemed completely ordinary, two strangers unexpectedly
+          crossed paths.<br />
+          This is a quiet celebration of the sixty days that followed.
+        </p>
+        <button
+          class="btn"
+          id="start-journey-btn"
+          aria-label="Step into the memory"
+        >
+          Step inside the memory
+        </button>
+      </section>
+
+      <!-- SCENE 1: CURIOSITY (Curiosity Sparks) -->
+      <section class="scene" id="scene-1" aria-hidden="true">
+        <h2 class="scene-title">Curiosity</h2>
+        <p class="scene-text" id="scene-1-text">
+          It started so
+          <span class="highlight-letter" data-letter="u">u</span>nassumingly.
+          Just two independent lives colliding. A simple exchange of words that
+          somehow caught, like a spark in the dry brush of a busy week.
+        </p>
+        <p class="scene-text" style="font-size: 1.15rem; opacity: 0.7">
+          Move your cursor slowly to gather the sparks of curiosity.<br />
+          <span style="color: var(--warm-gold)"
+            >Long-press (hold) the passage</span
+          >
+          above to let the words expand and breathe.
+        </p>
+      </section>
+
+      <!-- SCENE 2: COMFORT (Erase the Fog) -->
+      <section class="scene" id="scene-2" aria-hidden="true">
+        <h2 class="scene-title">Comfort</h2>
+        <p class="scene-text">
+          Soon, the silence became
+          <span class="highlight-letter" data-letter="s">s</span>afe. There was
+          no need to perform, no obligation to impress. Just a shared peace
+          where thoughts could drift freely, knowing they would land gently.
+        </p>
+        <p class="fog-instructions" id="fog-tip">
+          Brush your hand across the glass to clear the mist...
+        </p>
+      </section>
+
+      <!-- SCENE 3: LAUGHTER (Playful bubbles) -->
+      <section class="scene" id="scene-3" aria-hidden="true">
+        <h2 class="scene-title">Laughter</h2>
+        <p class="scene-text">
+          And then, the quiet broke into fits of laughter. Inside jokes born
+          from nothing, extending past midnight. The absolute ridiculousness of
+          understanding each other's weirdest thoughts.
+        </p>
+        <p class="scene-text" style="font-size: 1.15rem; opacity: 0.7">
+          Hover over the floating spheres to burst them and hear the bells of
+          shared joy.
+        </p>
+      </section>
+
+      <!-- SCENE 4: CONNECTION (Star Constellations) -->
+      <section class="scene" id="scene-4" aria-hidden="true">
+        <h2 class="scene-title">Connection</h2>
+        <p class="scene-text">
+          We began to trace the alignment of our orbits. Discovering shared
+          books, matching habits, and differences that clicked together like
+          interlocking puzzle pieces.
+        </p>
+        <p
+          class="scene-text"
+          style="font-size: 1.15rem; opacity: 0.7; margin-bottom: 1rem"
+        >
+          Connect the glowing stars below by dragging your cursor between them.
+        </p>
+        <p
+          id="constellation-word"
+          style="
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            letter-spacing: 0.15em;
+            color: var(--warm-gold);
+            height: 20px;
+            transition: opacity 0.5s;
+          "
+        ></p>
+      </section>
+
+      <!-- SCENE 5: GRATITUDE (Dandelions) -->
+      <section class="scene" id="scene-5" aria-hidden="true">
+        <h2 class="scene-title">Gratitude</h2>
+        <p class="scene-text">
+          Sixty days. In the grand scope of a lifetime, it is merely a blink.
+          Yet, when looking back at the texture of these two months, it is
+          filled with a warmth that has made every single day brighter.
+        </p>
+        <p class="scene-text" style="font-size: 1.15rem; opacity: 0.7">
+          Blow the dandelion seeds into the wind to carry thoughts of gratitude.
+        </p>
+      </section>
+
+      <!-- SCENE 6: HOPE (Aurora and Wishes) -->
+      <section class="scene" id="scene-6" aria-hidden="true">
+        <h2 class="scene-title">Hope</h2>
+        <p class="scene-text">
+          We make no dramatic declarations, nor do we demand promises of
+          forever. We simply look toward the horizon with a calm, gentle
+          anticipation, glad of the footsteps we are walking together.
+        </p>
+        <p class="scene-text" style="font-size: 1.15rem; opacity: 0.7">
+          Drag the wishing star upwards into the sky to send a prayer to the
+          future.
+        </p>
+      </section>
+
+      <!-- SCENE 7: PEACEFUL ENDING (Hearth & Live Timer) -->
+      <section class="scene" id="scene-7" aria-hidden="true">
+        <h2
+          class="scene-title"
+          id="ending-title"
+          style="margin-bottom: 0.5rem; cursor: pointer"
+        >
+          Two Months of Us
+        </h2>
+        <p
+          style="
+            font-family: var(--font-serif);
+            font-size: 1.2rem;
+            opacity: 0.85;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+          "
+        >
+          It has been a beautiful chapter. Thank you for walking beside me.
+        </p>
+
+        <!-- Interactive Live Timer since Met (Easter Egg #1 / Final Display) -->
+        <div class="metrics-row" id="live-timer-row">
+          <div class="metric-box">
+            <span class="metric-value" id="days-val">00</span>
+            <span class="metric-label">Days</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-value" id="hours-val">00</span>
+            <span class="metric-label">Hours</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-value" id="mins-val">00</span>
+            <span class="metric-label">Mins</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-value" id="secs-val">00</span>
+            <span class="metric-label">Secs</span>
+          </div>
+        </div>
+
+        <button
+          class="btn"
+          id="restart-btn"
+          style="margin-top: 1rem; padding: 0.7rem 1.6rem"
+          aria-label="Begin the memory again"
+        >
+          Revisit the first day
+        </button>
+      </section>
+    </main>
+
+    <!-- Navigation Overlays (Reveals after step-in) -->
+    <div class="navigation-controls" id="nav-controls">
+      <button
+        class="nav-arrow"
+        id="prev-btn"
+        aria-label="Previous scene"
+        disabled
+      >
+        <!-- Lucide-style Inline SVG Arrow Left -->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m15 18-6-6 6-6" />
+        </svg>
+      </button>
+      <div class="progress-dots" id="progress-dots">
+        <div
+          class="dot active"
+          data-index="0"
+          role="button"
+          aria-label="Go to scene 1"
+        ></div>
+        <div
+          class="dot"
+          data-index="1"
+          role="button"
+          aria-label="Go to scene 2"
+        ></div>
+        <div
+          class="dot"
+          data-index="2"
+          role="button"
+          aria-label="Go to scene 3"
+        ></div>
+        <div
+          class="dot"
+          data-index="3"
+          role="button"
+          aria-label="Go to scene 4"
+        ></div>
+        <div
+          class="dot"
+          data-index="4"
+          role="button"
+          aria-label="Go to scene 5"
+        ></div>
+        <div
+          class="dot"
+          data-index="5"
+          role="button"
+          aria-label="Go to scene 6"
+        ></div>
+        <div
+          class="dot"
+          data-index="6"
+          role="button"
+          aria-label="Go to scene 7"
+        ></div>
+        <div
+          class="dot"
+          data-index="7"
+          role="button"
+          aria-label="Go to scene 8"
+        ></div>
+      </div>
+      <button class="nav-arrow" id="next-btn" aria-label="Next scene">
+        <!-- Lucide-style Inline SVG Arrow Right -->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m9 18 6-6-6-6" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Keyboard Shortcuts and Hints (Bottom Center, subtle) -->
+    <div class="keyboard-hint-overlay" id="keyboard-hint">
+      Use ← / → Arrows or Drag to travel through time
+    </div>
+
+    <!-- Ambient UI Controls (Top Right) -->
+    <div class="ambient-ui" id="ambient-ui">
+      <!-- Volume Toggle & Slider combo -->
+      <div class="audio-slider-container" id="audio-panel">
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value="30"
+          class="volume-slider"
+          id="volume-control"
+          aria-label="Volume level"
+        />
+      </div>
+      <button
+        class="ui-icon-btn"
+        id="volume-toggle-btn"
+        aria-label="Toggle music"
+        title="Mute/Unmute Music"
+      >
+        <!-- Unmuted Icon -->
+        <svg
+          id="vol-on-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M11 5 6 9H2v6h4l5 4V5z" />
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+        </svg>
+        <!-- Muted Icon (Hidden initially) -->
+        <svg
+          id="vol-off-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="display: none"
+        >
+          <path d="M11 5 6 9H2v6h4l5 4V5z" />
+          <line x1="22" y1="9" x2="16" y2="15" />
+          <line x1="16" y1="9" x2="22" y2="15" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Easter Egg Ledger Button (Top Left / Bottom Left discovery) -->
+    <button class="info-helper-btn" id="open-ledger-btn">
+      The Memory Ledger
+    </button>
+
+    <!-- Easter Egg Indicators (Bottom Left, LED dots) -->
+    <div class="egg-indicators" id="egg-indicators-panel">
+      <div
+        class="egg-led"
+        id="egg-led-0"
+        data-hint="Ticking Seconds (Hover title)"
+      ></div>
+      <div
+        class="egg-led"
+        id="egg-led-1"
+        data-hint="Golden Sparks (Double click)"
+      ></div>
+      <div
+        class="egg-led"
+        id="egg-led-2"
+        data-hint="Blooming Thoughts (Long press text)"
+      ></div>
+      <div
+        class="egg-led"
+        id="egg-led-3"
+        data-hint="Lantern Light (Press 'L')"
+      ></div>
+      <div
+        class="egg-led"
+        id="egg-led-4"
+        data-hint="Traced Alignment (Press 'C')"
+      ></div>
+      <div
+        class="egg-led"
+        id="egg-led-5"
+        data-hint="Perfect Quiet (Wait 8 seconds)"
+      ></div>
+      <div
+        class="egg-led"
+        id="egg-led-6"
+        data-hint="Reflecting Waves (Drag background)"
+      ></div>
+      <div
+        class="egg-led"
+        id="egg-led-7"
+        data-hint="Dandelion Wish (Click wandering seed)"
+      ></div>
+      <div
+        class="egg-led"
+        id="egg-led-8"
+        data-hint="Letter Connections (Hover 'u' & 's')"
+      ></div>
+      <div
+        class="egg-led"
+        id="egg-led-9"
+        data-hint="Shooting Star Swipe (Drag top banner)"
+      ></div>
+    </div>
+
+    <!-- Memory Ledger Modal (Easter Egg List to reward curiosity) -->
+    <div class="ledger-modal" id="ledger-modal" aria-modal="true" role="dialog">
+      <h3 class="ledger-title">The Memory Ledger</h3>
+      <p
+        style="
+          font-size: 0.75rem;
+          text-align: center;
+          opacity: 0.6;
+          margin-bottom: 1.5rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        "
+      >
+        Ten quiet hidden moments to be found
+      </p>
+      <ul class="ledger-list" id="ledger-list-items">
+        <!-- Will be dynamically populated to show discovered/undiscovered eggs -->
+      </ul>
+      <button class="close-ledger-btn" id="close-ledger-btn">
+        Close Ledger
+      </button>
+    </div>
+
+    <!-- Easter Egg Toast Notification -->
+    <div class="egg-toast" id="egg-toast">
+      <span class="egg-toast-icon">✨</span>
+      <span id="egg-toast-text">You've unlocked a silent memory.</span>
+    </div>
+
+    <script>
+      // =========================================================================
+      // PROCEDURAL SOUND DESIGN (Web Audio API)
+      // =========================================================================
+      class AmbientSynth {
+        constructor() {
+          this.ctx = null;
+          this.masterGain = null;
+          this.delayNode = null;
+          this.delayFeedback = null;
+          this.isPlaying = false;
+          // Soft Ethereal Pentatonic Scale for infinite ambient chords
+          this.notes = [
+            130.81, 146.83, 164.81, 196.0, 220.0, 261.63, 293.66, 329.63, 392.0,
+            440.0, 523.25, 587.33, 659.25, 783.99, 880.0,
+          ];
+          this.windFilter = null;
+          this.windNoise = null;
+          this.windGain = null;
+          this.isMuted = false;
+          this.savedVolume = 0.3;
+        }
+
+        init() {
+          if (this.ctx) return;
+          try {
+            const AudioContextClass =
+              window.AudioContext || window.webkitAudioContext;
+            this.ctx = new AudioContextClass();
+
+            // Master volume
+            this.masterGain = this.ctx.createGain();
+            this.masterGain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+            this.masterGain.connect(this.ctx.destination);
+
+            // Spacious Stereo Delay Loop
+            this.delayNode = this.ctx.createDelay(2.0);
+            this.delayNode.delayTime.setValueAtTime(0.7, this.ctx.currentTime);
+
+            this.delayFeedback = this.ctx.createGain();
+            this.delayFeedback.gain.setValueAtTime(0.45, this.ctx.currentTime);
+
+            // Connect feedback delay line
+            this.delayNode.connect(this.delayFeedback);
+            this.delayFeedback.connect(this.delayNode);
+            this.delayNode.connect(this.masterGain);
+
+            this.isPlaying = true;
+
+            // Kickoff background synths
+            this.startPianoLoop();
+            this.startWindSynth();
+          } catch (e) {
+            console.warn("Web Audio API not supported or blocked: ", e);
+          }
+        }
+
+        setVolume(val) {
+          if (!this.ctx) return;
+          this.savedVolume = val;
+          if (!this.isMuted && this.masterGain) {
+            this.masterGain.gain.setTargetAtTime(
+              val,
+              this.ctx.currentTime,
+              0.1,
+            );
+          }
+        }
+
+        toggleMute() {
+          if (!this.ctx) return;
+          this.isMuted = !this.isMuted;
+          if (this.isMuted) {
+            this.masterGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.1);
+          } else {
+            this.masterGain.gain.setTargetAtTime(
+              this.savedVolume,
+              this.ctx.currentTime,
+              0.1,
+            );
+          }
+          return this.isMuted;
+        }
+
+        // Procedural Piano Sound Synthesis
+        playPianoNote(freq, delayTime = 0, velocity = 0.5) {
+          if (!this.ctx || !this.isPlaying || this.isMuted) return;
+          const t = this.ctx.currentTime + delayTime;
+
+          // Subtly detune for natural warmth and analog wobble
+          const detune = (Math.random() - 0.5) * 0.0012;
+          const finalFreq = freq * (1 + detune);
+
+          // Sub-oscillator for round bass tone
+          const oscSub = this.ctx.createOscillator();
+          oscSub.type = "sine";
+          oscSub.frequency.setValueAtTime(finalFreq / 2, t);
+
+          // Fundamental oscillator (Warm sine wave)
+          const osc1 = this.ctx.createOscillator();
+          osc1.type = "sine";
+          osc1.frequency.setValueAtTime(finalFreq, t);
+
+          // Harmonic oscillator (Triangle wave for acoustic character)
+          const osc2 = this.ctx.createOscillator();
+          osc2.type = "triangle";
+          osc2.frequency.setValueAtTime(finalFreq, t);
+
+          const gainSub = this.ctx.createGain();
+          const gain1 = this.ctx.createGain();
+          const gain2 = this.ctx.createGain();
+          const noteGain = this.ctx.createGain();
+
+          gainSub.gain.setValueAtTime(velocity * 0.12, t);
+          gain1.gain.setValueAtTime(velocity * 0.35, t);
+          gain2.gain.setValueAtTime(velocity * 0.04, t);
+
+          // Breathing ADSR envelope
+          noteGain.gain.setValueAtTime(0, t);
+          noteGain.gain.linearRampToValueAtTime(1.0, t + 0.05); // soft, delicate attack
+          noteGain.gain.exponentialRampToValueAtTime(0.001, t + 5.0); // gorgeous, long piano tail
+
+          // Connect routing
+          oscSub.connect(gainSub);
+          osc1.connect(gain1);
+          osc2.connect(gain2);
+
+          gainSub.connect(noteGain);
+          gain1.connect(noteGain);
+          gain2.connect(noteGain);
+
+          noteGain.connect(this.masterGain);
+          noteGain.connect(this.delayNode);
+
+          oscSub.start(t);
+          osc1.start(t);
+          osc2.start(t);
+
+          oscSub.stop(t + 6.0);
+          osc1.stop(t + 6.0);
+          osc2.stop(t + 6.0);
+        }
+
+        // Crystalline Bell Sound Synthesis
+        playBell(freq, velocity = 0.25) {
+          if (!this.ctx || !this.isPlaying || this.isMuted) return;
+          const t = this.ctx.currentTime;
+
+          const osc = this.ctx.createOscillator();
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(freq, t);
+
+          // High harmonic chime
+          const chime = this.ctx.createOscillator();
+          chime.type = "sine";
+          chime.frequency.setValueAtTime(freq * 3.01, t); // Metallic, non-integer multiplier
+
+          const gainOsc = this.ctx.createGain();
+          const gainChime = this.ctx.createGain();
+          const bellGain = this.ctx.createGain();
+
+          gainOsc.gain.setValueAtTime(velocity * 0.4, t);
+          gainChime.gain.setValueAtTime(velocity * 0.12, t);
+
+          bellGain.gain.setValueAtTime(0, t);
+          bellGain.gain.linearRampToValueAtTime(1.0, t + 0.003); // Instant hammer impact
+          bellGain.gain.exponentialRampToValueAtTime(0.001, t + 3.0); // Resonant sustain
+
+          osc.connect(gainOsc);
+          chime.connect(gainChime);
+
+          gainOsc.connect(bellGain);
+          gainChime.connect(bellGain);
+
+          bellGain.connect(this.masterGain);
+          bellGain.connect(this.delayNode);
+
+          osc.start(t);
+          chime.start(t);
+
+          osc.stop(t + 4.0);
+          chime.stop(t + 4.0);
+        }
+
+        // Slow piano loops triggering quiet chords
+        startPianoLoop() {
+          const run = () => {
+            if (!this.isPlaying) return;
+
+            // Chord structures matching the quiet, peaceful vibe (DbMaj9, Abadd9, Fm7, Bbsus4)
+            const chords = [
+              [130.81, 196.0, 261.63, 329.63, 392.0], // C major-ish chord
+              [146.83, 220.0, 293.66, 349.23, 440.0], // D minor-ish chord
+              [164.81, 246.94, 329.63, 392.0, 493.88], // E minor-ish chord
+              [130.81, 174.61, 261.63, 349.23, 440.0], // F major-ish chord
+            ];
+
+            const currentChord =
+              chords[Math.floor(Math.random() * chords.length)];
+
+            // Roll the chord slightly for an acoustic piano touch
+            currentChord.forEach((freq, idx) => {
+              const delay = idx * (0.05 + Math.random() * 0.1);
+              const vel = 0.2 + Math.random() * 0.3;
+              this.playPianoNote(freq, delay, vel);
+            });
+
+            // Single high melodic notes drifting in
+            if (Math.random() > 0.4) {
+              const melodyFrequencies = [
+                523.25, 587.33, 659.25, 783.99, 880.0, 1046.5,
+              ];
+              const melFreq =
+                melodyFrequencies[
+                  Math.floor(Math.random() * melodyFrequencies.length)
+                ];
+              this.playPianoNote(melFreq, 2.0 + Math.random() * 1.5, 0.25);
+            }
+
+            // Schedule next chord in a slow breathe (4.5 to 8.5 seconds)
+            const nextTimeout = 4500 + Math.random() * 4000;
+            setTimeout(run, nextTimeout);
+          };
+          run();
+        }
+
+        // Organic Wind Noise Synthesizer
+        startWindSynth() {
+          if (!this.ctx) return;
+          const sampleRate = this.ctx.sampleRate;
+          const bufferSize = 2 * sampleRate;
+          const noiseBuffer = this.ctx.createBuffer(1, bufferSize, sampleRate);
+          const output = noiseBuffer.getChannelData(0);
+
+          for (let i = 0; i < bufferSize; i++) {
+            output[i] = Math.random() * 2 - 1;
+          }
+
+          this.windNoise = this.ctx.createBufferSource();
+          this.windNoise.buffer = noiseBuffer;
+          this.windNoise.loop = true;
+
+          this.windFilter = this.ctx.createBiquadFilter();
+          this.windFilter.type = "lowpass";
+          this.windFilter.Q.setValueAtTime(2.0, this.ctx.currentTime);
+          this.windFilter.frequency.setValueAtTime(250, this.ctx.currentTime);
+
+          this.windGain = this.ctx.createGain();
+          this.windGain.gain.setValueAtTime(0.008, this.ctx.currentTime); // Whisper quiet
+
+          this.windNoise.connect(this.windFilter);
+          this.windFilter.connect(this.windGain);
+          this.windGain.connect(this.masterGain);
+
+          this.windNoise.start(0);
+
+          // Continuous gentle sweeps of wind filter
+          const sweep = () => {
+            if (!this.isPlaying || this.isMuted) return;
+            const t = this.ctx.currentTime;
+            const targetFreq = 120 + Math.random() * 260;
+            const targetGain = 0.004 + Math.random() * 0.012;
+            const duration = 5 + Math.random() * 7;
+
+            this.windFilter.frequency.exponentialRampToValueAtTime(
+              targetFreq,
+              t + duration,
+            );
+            this.windGain.gain.linearRampToValueAtTime(
+              targetGain,
+              t + duration,
+            );
+
+            setTimeout(sweep, duration * 1000);
+          };
+          sweep();
+        }
+      }
+
+      const soundEngine = new AmbientSynth();
+
+      // =========================================================================
+      // EASTER EGGS DISCOVERY TRACKER
+      // =========================================================================
+      const EASTER_EGGS = [
+        {
+          id: 0,
+          key: "timer",
+          name: "The Seconds of Shared Laughter",
+          desc: "Hovered the heading on the final screen to check live seconds since meeting.",
+          hint: "Hover the final title",
+        },
+        {
+          id: 1,
+          key: "sparks",
+          name: "Aurora Firefly Burst",
+          desc: "Double-clicked the background, summoning floating sparks.",
+          hint: "Double click anywhere",
+        },
+        {
+          id: 2,
+          key: "bloom",
+          name: "The Expansion of Thoughts",
+          desc: "Long pressed a passage of story text, letting letters breathe.",
+          hint: "Long press text",
+        },
+        {
+          id: 3,
+          key: "lantern",
+          name: "Guiding Lantern Glow",
+          desc: "Pressed 'L' to attach a warm glowing lantern field to the cursor.",
+          hint: "Press 'L' key",
+        },
+        {
+          id: 4,
+          key: "stars",
+          name: "Celestial Alignment",
+          desc: "Pressed 'C' to trace the star constellation trails.",
+          hint: "Press 'C' key",
+        },
+        {
+          id: 5,
+          key: "stillness",
+          name: "A Silent Refuge",
+          desc: "Remained completely still for 8 seconds, letting the busy world dissolve.",
+          hint: "Wait 8 seconds silently",
+        },
+        {
+          id: 6,
+          key: "waves",
+          name: "Luminous Water Ripples",
+          desc: "Dragged rapidly on the background canvas to generate light waves.",
+          hint: "Drag rapidly across screen",
+        },
+        {
+          id: 7,
+          key: "seed",
+          name: "A Drifting Wish",
+          desc: "Found and clicked the solitary floating wishing seed.",
+          hint: "Catch the floating seed",
+        },
+        {
+          id: 8,
+          key: "letters",
+          name: "The Hidden We",
+          desc: "Found and highlighted both 'u' and 's' characters in the narrative.",
+          hint: "Find hidden letters 'u' and 's'",
+        },
+        {
+          id: 9,
+          key: "swipe",
+          name: "A Midsummer Comet",
+          desc: "Dragged rapidly horizontally across the top header to invoke a shooting star.",
+          hint: "Swipe top of screen",
+        },
+      ];
+
+      const discoveredEggs = new Set(
+        JSON.parse(localStorage.getItem("two_months_eggs") || "[]"),
+      );
+
+      function discoverEgg(id) {
+        if (discoveredEggs.has(id)) return;
+        discoveredEggs.add(id);
+        localStorage.setItem(
+          "two_months_eggs",
+          JSON.stringify([...discoveredEggs]),
+        );
+
+        // Sound celebration
+        soundEngine.playBell(523.25); // high note C
+        setTimeout(() => soundEngine.playBell(659.25), 150); // note E
+        setTimeout(() => soundEngine.playBell(783.99), 300); // note G
+
+        // Visual highlight LED
+        const led = document.getElementById(`egg-led-${id}`);
+        if (led) {
+          led.classList.add("discovered");
+        }
+
+        // Show toast notification
+        const toast = document.getElementById("egg-toast");
+        const toastText = document.getElementById("egg-toast-text");
+        toastText.innerText = `Memory unlocked: "${EASTER_EGGS[id].name}"`;
+        toast.classList.add("show");
+        setTimeout(() => {
+          toast.classList.remove("show");
+        }, 4000);
+
+        updateLedgerItems();
+      }
+
+      // Populate Indicators on load
+      function initIndicators() {
+        EASTER_EGGS.forEach((egg) => {
+          const led = document.getElementById(`egg-led-${egg.id}`);
+          if (led) {
+            led.setAttribute(
+              "data-hint",
+              discoveredEggs.has(egg.id) ? egg.name : `Locked: ${egg.hint}`,
+            );
+            if (discoveredEggs.has(egg.id)) {
+              led.classList.add("discovered");
+            }
+          }
+        });
+      }
+
+      function updateLedgerItems() {
+        const listContainer = document.getElementById("ledger-list-items");
+        if (!listContainer) return;
+        listContainer.innerHTML = "";
+
+        EASTER_EGGS.forEach((egg) => {
+          const isFound = discoveredEggs.has(egg.id);
+          const li = document.createElement("li");
+          li.className = "ledger-item";
+          li.innerHTML = `
+            <div style="text-align: left;">
+              <span class="ledger-item-title" style="font-weight: ${isFound ? "500" : "300"}; color: ${isFound ? "var(--warm-gold)" : "rgba(251,248,243,0.5)"}">
+                ${isFound ? egg.name : "???"}
+              </span>
+              <p style="font-size: 0.65rem; color: rgba(251,248,243,0.4); margin-top: 2px;">
+                ${isFound ? egg.desc : `Clue: ${egg.hint}`}
+              </p>
+            </div>
+            <span class="ledger-item-status ${isFound ? "found" : "locked"}">${isFound ? "Found" : "Locked"}</span>
+          `;
+          listContainer.appendChild(li);
+        });
+      }
+
+      // =========================================================================
+      // NARRATIVE PROGRESSION MANAGER
+      // =========================================================================
+      const TOTAL_SCENES = 8;
+      let currentSceneIndex = 0;
+      let isTransitioning = false;
+
+      function updateScenes(targetIndex) {
+        if (isTransitioning) return;
+        isTransitioning = true;
+
+        const prevIndex = currentSceneIndex;
+        currentSceneIndex = targetIndex;
+
+        // Custom chime on progression
+        if (soundEngine.ctx && targetIndex > 0) {
+          const frequencies = [261.63, 329.63, 392.0, 523.25];
+          const freq = frequencies[targetIndex % frequencies.length];
+          soundEngine.playBell(freq, 0.15);
+        }
+
+        // Accessibilities ARIA & visual transition
+        for (let i = 0; i < TOTAL_SCENES; i++) {
+          const sceneEl = document.getElementById(`scene-${i}`);
+          if (!sceneEl) continue;
+
+          sceneEl.classList.remove("active", "past");
+          sceneEl.setAttribute("aria-hidden", "true");
+
+          if (i === targetIndex) {
+            sceneEl.classList.add("active");
+            sceneEl.setAttribute("aria-hidden", "false");
+          } else if (i < targetIndex) {
+            sceneEl.classList.add("past");
+          }
+        }
+
+        // Active special layers based on scene index
+        toggleSceneFeatures(targetIndex);
+
+        // Update progress indicators
+        const dots = document.querySelectorAll(".progress-dots .dot");
+        dots.forEach((dot, idx) => {
+          dot.classList.toggle("active", idx === targetIndex);
+        });
+
+        // Update Nav Arrows states
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
+        if (prevBtn) prevBtn.disabled = targetIndex === 0;
+        if (nextBtn) nextBtn.disabled = targetIndex === TOTAL_SCENES - 1;
+
+        // Show/hide help overlay based on scene
+        const hintOverlay = document.getElementById("keyboard-hint");
+        if (targetIndex > 0 && targetIndex < TOTAL_SCENES - 1) {
+          hintOverlay.classList.add("visible");
+        } else {
+          hintOverlay.classList.remove("visible");
+        }
+
+        // Cooldown to prevent multi-triggering
+        setTimeout(() => {
+          isTransitioning = false;
+        }, 1200);
+      }
+
+      function toggleSceneFeatures(index) {
+        // Comfort Scene (Foggy Window)
+        const fogCanvas = document.getElementById("fog-canvas");
+        if (index === 2) {
+          fogCanvas.classList.add("active");
+          initFogLayer();
+        } else {
+          fogCanvas.classList.remove("active");
+        }
+
+        // Connection Scene (Star Constellation lines)
+        const starSvg = document.getElementById("star-connect-svg");
+        if (index === 4) {
+          starSvg.style.opacity = "1";
+          initConstellations();
+        } else {
+          starSvg.style.opacity = "0";
+          clearConstellations();
+        }
+      }
+
+      // Keyboard & Scroll/Gesture inputs
+      window.addEventListener("keydown", (e) => {
+        if (currentSceneIndex === 0 && !soundEngine.ctx) return; // Wait until entry
+        if (document.getElementById("ledger-modal").classList.contains("open"))
+          return;
+
+        if (e.key === "ArrowRight" || e.key === " ") {
+          if (currentSceneIndex < TOTAL_SCENES - 1)
+            updateScenes(currentSceneIndex + 1);
+        } else if (e.key === "ArrowLeft") {
+          if (currentSceneIndex > 0) updateScenes(currentSceneIndex - 1);
+        } else if (e.key.toLowerCase() === "l") {
+          // Easter Egg #4: Lantern Toggle
+          const body = document.body;
+          body.classList.toggle("cursor-lantern");
+          discoverEgg(3);
+        } else if (e.key.toLowerCase() === "c") {
+          // Easter Egg #5: Star alignment
+          showConstellationLines = !showConstellationLines;
+          discoverEgg(4);
+        }
+      });
+
+      // Swipe / Drag transitions on body
+      let startX = 0;
+      let startY = 0;
+      window.addEventListener("touchstart", (e) => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      });
+      window.addEventListener("touchend", (e) => {
+        if (currentSceneIndex === 0 && !soundEngine.ctx) return;
+        const diffX = e.changedTouches[0].clientX - startX;
+        const diffY = e.changedTouches[0].clientY - startY;
+
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 60) {
+          if (diffX < 0 && currentSceneIndex < TOTAL_SCENES - 1) {
+            updateScenes(currentSceneIndex + 1);
+          } else if (diffX > 0 && currentSceneIndex > 0) {
+            updateScenes(currentSceneIndex - 1);
+          }
+        }
+      });
+
+      // Scrolling trackpad / wheel swipe
+      let wheelAccumulator = 0;
+      window.addEventListener("wheel", (e) => {
+        if (currentSceneIndex === 0 && !soundEngine.ctx) return;
+        wheelAccumulator += e.deltaY;
+        if (Math.abs(wheelAccumulator) > 350) {
+          if (wheelAccumulator > 0 && currentSceneIndex < TOTAL_SCENES - 1) {
+            updateScenes(currentSceneIndex + 1);
+          } else if (wheelAccumulator < 0 && currentSceneIndex > 0) {
+            updateScenes(currentSceneIndex - 1);
+          }
+          wheelAccumulator = 0;
+        }
+      });
+
+      // =========================================================================
+      // BEAUTIFUL BACKGROUND RENDERER (Fluid atmospheric Canvas)
+      // =========================================================================
+      const canvas = document.getElementById("ambient-canvas");
+      const ctx = canvas.getContext("2d");
+      let width = window.innerWidth;
+      let height = window.innerHeight;
+
+      // Resize observer
+      const resizeObserver = new ResizeObserver((entries) => {
+        for (let entry of entries) {
+          const dpr = window.devicePixelRatio || 1;
+          width = entry.contentRect.width;
+          height = entry.contentRect.height;
+          canvas.width = width * dpr;
+          canvas.height = height * dpr;
+          ctx.scale(dpr, dpr);
+        }
+      });
+      resizeObserver.observe(document.body);
+
+      // Gradient Theme Definitions
+      const THEMES = [
+        {
+          // Scene 0: Prelude (Dark Navy Starry Void)
+          bg1: [6, 9, 19],
+          bg2: [14, 21, 38],
+          lightColor: [229, 196, 83],
+        },
+        {
+          // Scene 1: Curiosity (Night transitioning to Peach Dawn)
+          bg1: [10, 17, 40],
+          bg2: [35, 30, 48],
+          lightColor: [252, 239, 227],
+        },
+        {
+          // Scene 2: Comfort (Warm Cream & Soft Blush Pink)
+          bg1: [21, 15, 23],
+          bg2: [48, 28, 32],
+          lightColor: [249, 229, 230],
+        },
+        {
+          // Scene 3: Laughter (Radiant Gold & Soft Champagne)
+          bg1: [12, 18, 30],
+          bg2: [25, 35, 45],
+          lightColor: [229, 196, 83],
+        },
+        {
+          // Scene 4: Connection (Ethereal Muted Lavender to Deep Moonlight)
+          bg1: [10, 12, 26],
+          bg2: [20, 22, 45],
+          lightColor: [232, 229, 236],
+        },
+        {
+          // Scene 5: Gratitude (Midnight Sky with Warm Sparkles)
+          bg1: [5, 10, 24],
+          bg2: [12, 18, 32],
+          lightColor: [229, 196, 83],
+        },
+        {
+          // Scene 6: Hope (Symphonic Aurora Skies)
+          bg1: [4, 8, 16],
+          bg2: [10, 15, 28],
+          lightColor: [100, 240, 180],
+        },
+        {
+          // Scene 7: Hearth Ending (Deep cozy dark starry fire)
+          bg1: [4, 6, 12],
+          bg2: [10, 12, 20],
+          lightColor: [229, 160, 60],
+        },
+      ];
+
+      // Interpolation helpers for Background morphing
+      let activeBg1 = [...THEMES[0].bg1];
+      let activeBg2 = [...THEMES[0].bg2];
+      let activeLight = [...THEMES[0].lightColor];
+
+      // General Particle Systems
+      const dustParticles = [];
+      const flockSparks = []; // Scene 1
+      const laughterBubbles = []; // Scene 3
+      const dandelions = []; // Scene 5
+      const shootingStars = []; // Easter Egg / Ambient Events
+      let constellationStars = []; // Scene 4
+      let dandelionWishingSeed = null; // Easter Egg #8
+
+      let mouseX = width / 2;
+      let mouseY = height / 2;
+      let targetMouseX = width / 2;
+      let targetMouseY = height / 2;
+      let showConstellationLines = false; // Toggleable via 'C'
+
+      // Light Ripples from Dragging (Easter Egg #7)
+      const ripples = [];
+
+      class Dust {
+        constructor() {
+          this.reset();
+        }
+        reset() {
+          this.x = Math.random() * width;
+          this.y = Math.random() * height + height; // Spawn offscreen below
+          this.r = 1 + Math.random() * 4;
+          this.opacity = 0.15 + Math.random() * 0.4;
+          this.speedY = 0.2 + Math.random() * 0.6;
+          this.speedX = (Math.random() - 0.5) * 0.15;
+          this.wobble = Math.random() * Math.PI;
+          this.wobbleSpeed = 0.005 + Math.random() * 0.01;
+        }
+        update() {
+          this.y -= this.speedY;
+          this.wobble += this.wobbleSpeed;
+          this.x += Math.sin(this.wobble) * 0.2 + this.speedX;
+
+          if (this.y < -20 || this.x < -20 || this.x > width + 20) {
+            this.reset();
+          }
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(251, 248, 243, ${this.opacity})`;
+          ctx.shadowBlur = this.r * 2;
+          ctx.shadowColor = "var(--warm-gold)";
+          ctx.fill();
+          ctx.shadowBlur = 0; // Reset
+        }
+      }
+
+      // Initial Dust Populate
+      for (let i = 0; i < 80; i++) {
+        const d = new Dust();
+        d.y = Math.random() * height; // Distribute evenly at start
+        dustParticles.push(d);
+      }
+
+      // Scene 1: Sparks flocking algorithm
+      class Spark {
+        constructor() {
+          this.x = Math.random() * width;
+          this.y = Math.random() * height;
+          this.vx = (Math.random() - 0.5) * 2;
+          this.vy = (Math.random() - 0.5) * 2;
+          this.r = 2 + Math.random() * 2.5;
+          this.color =
+            Math.random() > 0.4 ? "var(--warm-gold)" : "var(--blush-pink)";
+          this.opacity = 0.2 + Math.random() * 0.6;
+        }
+        update() {
+          // Attract towards cursor
+          const dx = mouseX - this.x;
+          const dy = mouseY - this.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 400) {
+            const force = (400 - dist) / 5000;
+            this.vx += (dx / dist) * force;
+            this.vy += (dy / dist) * force;
+          }
+
+          this.vx *= 0.95; // Friction
+          this.vy *= 0.95;
+          this.x += this.vx;
+          this.y += this.vy;
+
+          // boundary checks
+          if (this.x < 0) this.x = width;
+          if (this.x > width) this.x = 0;
+          if (this.y < 0) this.y = height;
+          if (this.y > height) this.y = 0;
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.globalAlpha = this.opacity;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = this.color;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+          ctx.globalAlpha = 1;
+        }
+      }
+      for (let i = 0; i < 50; i++) flockSparks.push(new Spark());
+
+      // Scene 3: Poppable Laughter Bubbles
+      class LaughterBubble {
+        constructor() {
+          this.reset();
+        }
+        reset() {
+          this.x = Math.random() * width;
+          this.y = height + 50 + Math.random() * 200;
+          this.r = 15 + Math.random() * 30;
+          this.speedY = 0.6 + Math.random() * 1.2;
+          this.speedX = (Math.random() - 0.5) * 0.4;
+          this.wobble = Math.random() * Math.PI;
+          this.label = [
+            "lol",
+            "wait, what?",
+            "haha",
+            "no way",
+            "you didn't",
+            "midnight thoughts",
+            "weirdo",
+            "banter",
+          ][Math.floor(Math.random() * 8)];
+          this.opacity = 0.2 + Math.random() * 0.4;
+        }
+        update() {
+          this.y -= this.speedY;
+          this.x += Math.sin(this.wobble) * 0.2 + this.speedX;
+          this.wobble += 0.01;
+
+          // Auto pop on top boundary or out-of-screen
+          if (this.y < -this.r * 2) {
+            this.reset();
+          }
+
+          // Check interaction burst
+          const dx = mouseX - this.x;
+          const dy = mouseY - this.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < this.r + 20) {
+            this.burst();
+          }
+        }
+        burst() {
+          // Play resonant crystal glass sound
+          const notes = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5];
+          const pitch = notes[Math.floor(Math.random() * notes.length)];
+          soundEngine.playBell(pitch, 0.2);
+
+          // Add splash particle explosion
+          for (let i = 0; i < 15; i++) {
+            ripples.push({
+              x: this.x,
+              y: this.y,
+              r: 1 + Math.random() * 3,
+              vx: (Math.random() - 0.5) * 6,
+              vy: (Math.random() - 0.5) * 6,
+              color: "var(--warm-gold)",
+              opacity: 1,
+              life: 1.0,
+            });
+          }
+          this.reset();
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(251, 248, 243, ${this.opacity})`;
+          ctx.fillStyle = `rgba(251, 248, 243, 0.03)`;
+          ctx.lineWidth = 1;
+          ctx.fill();
+          ctx.stroke();
+
+          // Draw playful soft text inside bubble
+          ctx.font = `italic 0.65rem var(--font-sans)`;
+          ctx.fillStyle = `rgba(251, 248, 243, ${this.opacity + 0.25})`;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(this.label, this.x, this.y);
+        }
+      }
+      for (let i = 0; i < 12; i++) laughterBubbles.push(new LaughterBubble());
+
+      // Scene 5: Gratitude Dandelions
+      class DandelionSeed {
+        constructor() {
+          this.reset();
+        }
+        reset() {
+          this.x = Math.random() * (width * 0.5);
+          this.y = height + 20 + Math.random() * 100;
+          this.r = 1.5 + Math.random() * 2;
+          this.opacity = 0.3 + Math.random() * 0.5;
+          this.vx = 0.5 + Math.random() * 1.5;
+          this.vy = -(0.5 + Math.random() * 1.5);
+          this.wave = Math.random() * Math.PI;
+        }
+        update() {
+          this.wave += 0.015;
+          this.x += this.vx + Math.sin(this.wave) * 0.3;
+          this.y += this.vy;
+
+          // React to mouse sweep
+          const dx = mouseX - this.x;
+          const dy = mouseY - this.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 100) {
+            const power = (100 - dist) / 50;
+            this.vx += (dx / dist) * power * 0.5;
+            this.vy += (dy / dist) * power * 0.5;
+          }
+
+          if (this.y < -20 || this.x > width + 20) {
+            this.reset();
+          }
+        }
+        draw() {
+          ctx.beginPath();
+          // Draw a tiny dandelion starburst seed
+          ctx.moveTo(this.x, this.y);
+          ctx.lineTo(this.x - 6, this.y + 10);
+          ctx.strokeStyle = `rgba(251, 248, 243, ${this.opacity * 0.4})`;
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(251, 248, 243, ${this.opacity})`;
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = "var(--cream)";
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+      }
+      for (let i = 0; i < 30; i++) dandelions.push(new DandelionSeed());
+
+      // Constellation System for Scene 4
+      function initConstellations() {
+        constellationStars = [];
+        const positions = [
+          { x: 0.2, y: 0.3, label: "Understanding", found: false },
+          { x: 0.4, y: 0.6, label: "Warmth", found: false },
+          { x: 0.3, y: 0.8, label: "Trust", found: false },
+          { x: 0.6, y: 0.4, label: "Laughter", found: false },
+          { x: 0.8, y: 0.7, label: "Time", found: false },
+          { x: 0.7, y: 0.2, label: "Us", found: false },
+        ];
+
+        positions.forEach((pos) => {
+          constellationStars.push({
+            x: pos.x * width,
+            y: pos.y * height,
+            r: 4,
+            label: pos.label,
+            glowing: false,
+            pulse: Math.random() * Math.PI,
+          });
+        });
+      }
+      function clearConstellations() {
+        constellationStars = [];
+        const svg = document.getElementById("star-connect-svg");
+        if (svg) svg.innerHTML = "";
+      }
+
+      // Ambient Shooting Stars
+      class ShootingStar {
+        constructor(isManual = false, targetX, targetY) {
+          this.isManual = isManual;
+          this.x = targetX || Math.random() * width * 0.5;
+          this.y = targetY || Math.random() * height * 0.3;
+          this.length = 80 + Math.random() * 120;
+          this.speed = 12 + Math.random() * 15;
+          this.angle = Math.PI / 6 + (Math.random() - 0.5) * 0.1; // down-right
+          this.opacity = 0.8 + Math.random() * 0.2;
+          this.decay = 0.015 + Math.random() * 0.01;
+        }
+        update() {
+          this.x += Math.cos(this.angle) * this.speed;
+          this.y += Math.sin(this.angle) * this.speed;
+          this.opacity -= this.decay;
+        }
+        draw() {
+          const tailX = this.x - Math.cos(this.angle) * this.length;
+          const tailY = this.y - Math.sin(this.angle) * this.length;
+
+          const grad = ctx.createLinearGradient(this.x, this.y, tailX, tailY);
+          grad.addColorStop(0, `rgba(255, 255, 255, ${this.opacity})`);
+          grad.addColorStop(0.3, `rgba(229, 196, 83, ${this.opacity * 0.6})`);
+          grad.addColorStop(1, "rgba(229, 196, 83, 0)");
+
+          ctx.beginPath();
+          ctx.moveTo(this.x, this.y);
+          ctx.lineTo(tailX, tailY);
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+      }
+
+      // Regular ambient shooting star triggers
+      setInterval(() => {
+        if (currentSceneIndex > 0 && Math.random() > 0.4) {
+          shootingStars.push(new ShootingStar());
+        }
+      }, 15000);
+
+      // Easter Egg #8: Wandering Wishing Seed
+      class WanderingSeed {
+        constructor() {
+          this.x = -50;
+          this.y = Math.random() * height * 0.8;
+          this.r = 3;
+          this.vx = 0.8 + Math.random() * 0.5;
+          this.vy = (Math.random() - 0.5) * 0.4;
+          this.pulse = 0;
+          this.captured = false;
+        }
+        update() {
+          this.pulse += 0.03;
+          this.x += this.vx;
+          this.y += this.vy + Math.sin(this.pulse) * 0.15;
+
+          if (this.x > width + 50) {
+            dandelionWishingSeed = null; // despawn
+          }
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(
+            this.x,
+            this.y,
+            this.r + Math.sin(this.pulse) * 1.5,
+            0,
+            Math.PI * 2,
+          );
+          ctx.fillStyle = "var(--warm-gold)";
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = "var(--warm-gold)";
+          ctx.fill();
+          ctx.shadowBlur = 0;
+
+          // Draw elegant orbital dash ring
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, 12, 0, Math.PI * 2);
+          ctx.strokeStyle = "rgba(229, 196, 83, 0.25)";
+          ctx.setLineDash([2, 4]);
+          ctx.stroke();
+          ctx.setLineDash([]); // clear
+        }
+      }
+
+      // Periodically try to spawn the secret wish seed
+      setInterval(() => {
+        if (!dandelionWishingSeed && currentSceneIndex > 0) {
+          dandelionWishingSeed = new WanderingSeed();
+        }
+      }, 25000);
+
+      // =========================================================================
+      // MAIN ANIMATION RENDER LOOP (The Heartbeat)
+      // =========================================================================
+      let auroraOffset = 0;
+
+      function render() {
+        requestAnimationFrame(render);
+
+        // Smoothly interpolate background gradient themes based on active scene index
+        const activeTheme = THEMES[currentSceneIndex];
+        for (let j = 0; j < 3; j++) {
+          activeBg1[j] += (activeTheme.bg1[j] - activeBg1[j]) * 0.025;
+          activeBg2[j] += (activeTheme.bg2[j] - activeBg2[j]) * 0.025;
+          activeLight[j] +=
+            (activeTheme.lightColor[j] - activeLight[j]) * 0.025;
+        }
+
+        // Apply interpolated linear radial gradient
+        const radialGrad = ctx.createRadialGradient(
+          mouseX,
+          mouseY,
+          10,
+          width / 2,
+          height / 2,
+          Math.max(width, height),
+        );
+        radialGrad.addColorStop(
+          0,
+          `rgb(${Math.round(activeBg2[0])}, ${Math.round(activeBg2[1])}, ${Math.round(activeBg2[2])})`,
+        );
+        radialGrad.addColorStop(
+          1,
+          `rgb(${Math.round(activeBg1[0])}, ${Math.round(activeBg1[1])}, ${Math.round(activeBg1[2])})`,
+        );
+
+        ctx.fillStyle = radialGrad;
+        ctx.fillRect(0, 0, width, height);
+
+        // Slow atmospheric volumetric light beam (The Moving Sunbeam / Light ray)
+        const sunbeamGrad = ctx.createLinearGradient(0, 0, width, height);
+        const cycle = Math.sin(Date.now() * 0.0003);
+        sunbeamGrad.addColorStop(
+          0,
+          `rgba(${Math.round(activeLight[0])}, ${Math.round(activeLight[1])}, ${Math.round(activeLight[2])}, ${0.01 + cycle * 0.005})`,
+        );
+        sunbeamGrad.addColorStop(0.5, "rgba(0,0,0,0)");
+        sunbeamGrad.addColorStop(
+          1,
+          `rgba(${Math.round(activeLight[0])}, ${Math.round(activeLight[1])}, ${Math.round(activeLight[2])}, 0.003)`,
+        );
+        ctx.fillStyle = sunbeamGrad;
+        ctx.fillRect(0, 0, width, height);
+
+        // Draw Ambient Dust
+        dustParticles.forEach((d) => {
+          d.update();
+          d.draw();
+        });
+
+        // Drag ripple effects (Easter Egg #7)
+        for (let i = ripples.length - 1; i >= 0; i--) {
+          const r = ripples[i];
+          if (r.vx !== undefined) {
+            // Splash particles
+            r.x += r.vx;
+            r.y += r.vy;
+            r.vy += 0.06; // gravity
+            r.opacity -= 0.018;
+            ctx.beginPath();
+            ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(229, 196, 83, ${r.opacity})`;
+            ctx.fill();
+            if (r.opacity <= 0) ripples.splice(i, 1);
+          } else {
+            // Expanding light wave ripples
+            r.life += 0.012;
+            r.radius += r.speed;
+
+            ctx.beginPath();
+            ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(${Math.round(activeLight[0])}, ${Math.round(activeLight[1])}, ${Math.round(activeLight[2])}, ${1 - r.life})`;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            if (r.life >= 1.0) ripples.splice(i, 1);
+          }
+        }
+
+        // Shooting Stars
+        for (let i = shootingStars.length - 1; i >= 0; i--) {
+          const s = shootingStars[i];
+          s.update();
+          s.draw();
+          if (s.opacity <= 0) {
+            shootingStars.splice(i, 1);
+          }
+        }
+
+        // Active scene specific drawings on the general Canvas
+        if (currentSceneIndex === 1) {
+          // Curiosity Sparks
+          flockSparks.forEach((spark) => {
+            spark.update();
+            spark.draw();
+          });
+        } else if (currentSceneIndex === 3) {
+          // Laughter Bubbles
+          laughterBubbles.forEach((b) => {
+            b.update();
+            b.draw();
+          });
+        } else if (currentSceneIndex === 4) {
+          // Star alignments
+          drawConstellationsOnCanvas();
+        } else if (currentSceneIndex === 5) {
+          // Gratitude Dandelions
+          dandelions.forEach((d) => {
+            d.update();
+            d.draw();
+          });
+        } else if (currentSceneIndex === 6) {
+          // Hope (Aurora ribbons & wishing star)
+          drawAuroraBoreal();
+          drawWishingStar();
+        }
+
+        // Easter Egg Wishing Seed Update & Render
+        if (dandelionWishingSeed) {
+          dandelionWishingSeed.update();
+          dandelionWishingSeed.draw();
+        }
+
+        // Smooth Custom Cursor halo interpolation
+        const haloX = parseFloat(
+          document.getElementById("custom-cursor-halo").style.left || width / 2,
+        );
+        const haloY = parseFloat(
+          document.getElementById("custom-cursor-halo").style.top || height / 2,
+        );
+        const nextHaloX = haloX + (targetMouseX - haloX) * 0.12; // soft ease-out lag
+        const nextHaloY = haloY + (targetMouseY - haloY) * 0.12;
+
+        document.getElementById("custom-cursor-dot").style.left =
+          targetMouseX + "px";
+        document.getElementById("custom-cursor-dot").style.top =
+          targetMouseY + "px";
+        document.getElementById("custom-cursor-halo").style.left =
+          nextHaloX + "px";
+        document.getElementById("custom-cursor-halo").style.top =
+          nextHaloY + "px";
+
+        // Save current mouse coordinates
+        mouseX = nextHaloX;
+        mouseY = nextHaloY;
+      }
+
+      // Start core loop on load
+      requestAnimationFrame(render);
+
+      // =========================================================================
+      // COMFORT SCENE: FOG INTERACTIVE ERASING (Canvas masking)
+      // =========================================================================
+      const fogCanvas = document.getElementById("fog-canvas");
+      const fogCtx = fogCanvas.getContext("2d");
+      let fogRevealedPercentage = 0;
+      let isErasing = false;
+
+      function initFogLayer() {
+        fogCanvas.width = width;
+        fogCanvas.height = height;
+
+        // Draw soft, frosted elegant cover
+        fogCtx.fillStyle = "rgba(232, 229, 236, 0.95)"; // lavender frost
+        fogCtx.fillRect(0, 0, width, height);
+
+        // Add soft, elegant procedural texture to fog (some delicate circular gradients)
+        for (let i = 0; i < 40; i++) {
+          const r = 100 + Math.random() * 200;
+          const x = Math.random() * width;
+          const y = Math.random() * height;
+          const grad = fogCtx.createRadialGradient(x, y, 0, x, y, r);
+          grad.addColorStop(0, "rgba(251, 248, 243, 0.15)");
+          grad.addColorStop(1, "rgba(0,0,0,0)");
+          fogCtx.fillStyle = grad;
+          fogCtx.fillRect(0, 0, width, height);
+        }
+
+        // Overlay text clue written in fog
+        fogCtx.font = `italic 1.5rem var(--font-serif)`;
+        fogCtx.fillStyle = "rgba(6, 9, 19, 0.2)";
+        fogCtx.textAlign = "center";
+        fogCtx.textBaseline = "middle";
+        fogCtx.fillText("wipe to clear...", width / 2, height / 2 + 120);
+
+        fogRevealedPercentage = 0;
+      }
+
+      function eraseFog(x, y) {
+        fogCtx.globalCompositeOperation = "destination-out";
+
+        // Draw soft blur circle brush
+        const brushSize = 50;
+        const grad = fogCtx.createRadialGradient(x, y, 0, x, y, brushSize);
+        grad.addColorStop(0, "rgba(0,0,0,1)");
+        grad.addColorStop(0.5, "rgba(0,0,0,0.5)");
+        grad.addColorStop(1, "rgba(0,0,0,0)");
+
+        fogCtx.fillStyle = grad;
+        fogCtx.beginPath();
+        fogCtx.arc(x, y, brushSize, 0, Math.PI * 2);
+        fogCtx.fill();
+
+        // Count cleared percentage to discover egg & progress
+        checkFogCoverage();
+      }
+
+      function checkFogCoverage() {
+        // Quick estimate by reading a small sparse grid of pixels
+        const gridX = 15;
+        const gridY = 15;
+        let cleared = 0;
+        for (let gx = 1; gx < gridX; gx++) {
+          for (let gy = 1; gy < gridY; gy++) {
+            const px = Math.floor(gx * (width / gridX));
+            const py = Math.floor(gy * (height / gridY));
+            const imgData = fogCtx.getImageData(px, py, 1, 1).data;
+            if (imgData[3] === 0) cleared++; // alpha is 0
+          }
+        }
+
+        const percent = cleared / ((gridX - 1) * (gridY - 1));
+        if (percent > 0.45) {
+          // Unlocked enough
+          document.getElementById("fog-tip").innerText =
+            "Comfort found. A clear view of us.";
+          document.getElementById("fog-tip").style.color = "var(--warm-gold)";
+
+          // Fade fog completely out
+          fogCanvas.style.transition = "opacity 2.5s ease";
+          fogCanvas.style.opacity = "0";
+          setTimeout(() => {
+            fogCanvas.classList.remove("active");
+          }, 2500);
+        }
+      }
+
+      fogCanvas.addEventListener("mousedown", (e) => {
+        isErasing = true;
+        eraseFog(e.clientX, e.clientY);
+      });
+      fogCanvas.addEventListener("mousemove", (e) => {
+        if (isErasing) eraseFog(e.clientX, e.clientY);
+      });
+      window.addEventListener("mouseup", () => (isErasing = false));
+
+      // Touch support for erasing
+      fogCanvas.addEventListener("touchstart", (e) => {
+        isErasing = true;
+        eraseFog(e.touches[0].clientX, e.touches[0].clientY);
+      });
+      fogCanvas.addEventListener("touchmove", (e) => {
+        if (isErasing) {
+          e.preventDefault();
+          eraseFog(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      });
+
+      // =========================================================================
+      // CONNECTION SCENE: STAR CONSTELLATION TRACING (SVG / Canvas combo)
+      // =========================================================================
+      let isTracing = false;
+      let tracedLines = [];
+      let lastConnectedStar = null;
+
+      function drawConstellationsOnCanvas() {
+        constellationStars.forEach((star) => {
+          star.pulse += 0.015;
+          const currentSize = star.r + Math.sin(star.pulse) * 1.5;
+
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, currentSize, 0, Math.PI * 2);
+          ctx.fillStyle = star.glowing
+            ? "var(--warm-gold)"
+            : "rgba(251, 248, 243, 0.45)";
+          if (star.glowing) {
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = "var(--warm-gold)";
+          }
+          ctx.fill();
+          ctx.shadowBlur = 0;
+
+          // Star outer ring
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, currentSize * 2.5, 0, Math.PI * 2);
+          ctx.strokeStyle = star.glowing
+            ? "rgba(229, 196, 83, 0.35)"
+            : "rgba(251, 248, 243, 0.1)";
+          ctx.stroke();
+
+          // Star labels
+          if (star.glowing) {
+            ctx.font = "300 0.7rem var(--font-mono)";
+            ctx.fillStyle = "var(--warm-gold)";
+            ctx.textAlign = "center";
+            ctx.fillText(star.label, star.x, star.y - 15);
+          }
+        });
+
+        // Trace line path matching keyboard constellation 'C' easter egg
+        if (showConstellationLines) {
+          ctx.beginPath();
+          for (let i = 0; i < constellationStars.length; i++) {
+            const current = constellationStars[i];
+            const next =
+              constellationStars[(i + 1) % constellationStars.length];
+            ctx.moveTo(current.x, current.y);
+            ctx.lineTo(next.x, next.y);
+          }
+          ctx.strokeStyle = "rgba(229, 196, 83, 0.12)";
+          ctx.setLineDash([4, 6]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      }
+
+      // Drag line interaction
+      window.addEventListener("mousedown", (e) => {
+        if (currentSceneIndex !== 4) return;
+        const star = checkStarHover(e.clientX, e.clientY);
+        if (star) {
+          isTracing = true;
+          lastConnectedStar = star;
+          star.glowing = true;
+          soundEngine.playBell(329.63, 0.2); // E note chime
+        }
+      });
+
+      window.addEventListener("mousemove", (e) => {
+        if (currentSceneIndex !== 4 || !isTracing || !lastConnectedStar) return;
+
+        const svg = document.getElementById("star-connect-svg");
+        const star = checkStarHover(e.clientX, e.clientY);
+
+        // Render dynamic drag line in SVG
+        svg.innerHTML = "";
+
+        // Draw completed traced lines
+        tracedLines.forEach((line) => {
+          const l = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "line",
+          );
+          l.setAttribute("x1", line.x1);
+          l.setAttribute("y1", line.y1);
+          l.setAttribute("x2", line.x2);
+          l.setAttribute("y2", line.y2);
+          l.setAttribute("stroke", "var(--warm-gold)");
+          l.setAttribute("stroke-width", "1.5");
+          l.setAttribute("stroke-dasharray", "none");
+          svg.appendChild(l);
+        });
+
+        // Draw active drag line
+        const activeLine = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "line",
+        );
+        activeLine.setAttribute("x1", lastConnectedStar.x);
+        activeLine.setAttribute("y1", lastConnectedStar.y);
+        activeLine.setAttribute("x2", e.clientX);
+        activeLine.setAttribute("y2", e.clientY);
+        activeLine.setAttribute("stroke", "rgba(229, 196, 83, 0.5)");
+        activeLine.setAttribute("stroke-width", "1");
+        activeLine.setAttribute("stroke-dasharray", "3, 3");
+        svg.appendChild(activeLine);
+
+        if (star && star !== lastConnectedStar) {
+          // Connect stars
+          star.glowing = true;
+          tracedLines.push({
+            x1: lastConnectedStar.x,
+            y1: lastConnectedStar.y,
+            x2: star.x,
+            y2: star.y,
+          });
+
+          soundEngine.playBell(392.0, 0.25); // G note chime
+
+          // Set live word feedback
+          document.getElementById("constellation-word").innerText =
+            `Aligned Orbit: ${star.label}`;
+          document.getElementById("constellation-word").style.opacity = "1";
+          setTimeout(() => {
+            document.getElementById("constellation-word").style.opacity = "0.5";
+          }, 1500);
+
+          lastConnectedStar = star;
+
+          // If all stars connected, trigger discovery
+          const allGlowing = constellationStars.every((s) => s.glowing);
+          if (allGlowing) {
+            discoverEgg(4); // Star connection complete
+          }
+        }
+      });
+
+      window.addEventListener("mouseup", () => {
+        isTracing = false;
+        lastConnectedStar = null;
+        const svg = document.getElementById("star-connect-svg");
+        if (svg) svg.innerHTML = "";
+      });
+
+      // Touch supports for star tracing
+      window.addEventListener("touchstart", (e) => {
+        if (currentSceneIndex !== 4) return;
+        const star = checkStarHover(e.touches[0].clientX, e.touches[0].clientY);
+        if (star) {
+          isTracing = true;
+          lastConnectedStar = star;
+          star.glowing = true;
+          soundEngine.playBell(329.63, 0.2);
+        }
+      });
+      window.addEventListener("touchmove", (e) => {
+        if (currentSceneIndex !== 4 || !isTracing || !lastConnectedStar) return;
+        const star = checkStarHover(e.touches[0].clientX, e.touches[0].clientY);
+        if (star && star !== lastConnectedStar) {
+          star.glowing = true;
+          tracedLines.push({
+            x1: lastConnectedStar.x,
+            y1: lastConnectedStar.y,
+            x2: star.x,
+            y2: star.y,
+          });
+          soundEngine.playBell(392.0, 0.25);
+          lastConnectedStar = star;
+        }
+      });
+
+      function checkStarHover(x, y) {
+        for (let star of constellationStars) {
+          const dx = x - star.x;
+          const dy = y - star.y;
+          if (Math.sqrt(dx * dx + dy * dy) < 25) {
+            return star;
+          }
+        }
+        return null;
+      }
+
+      // =========================================================================
+      // HOPE SCENE: DRAGGING WISHING STAR & AURORA RIBBONS
+      // =========================================================================
+      let wishingStar = {
+        x: 0,
+        y: 0,
+        r: 10,
+        isDragging: false,
+        homeX: 0,
+        homeY: 0,
+      };
+
+      function drawWishingStar() {
+        if (wishingStar.homeX === 0) {
+          wishingStar.homeX = width / 2;
+          wishingStar.homeY = height * 0.7;
+          wishingStar.x = wishingStar.homeX;
+          wishingStar.y = wishingStar.homeY;
+        }
+
+        // Draw wishing star pod glow
+        const grad = ctx.createRadialGradient(
+          wishingStar.x,
+          wishingStar.y,
+          0,
+          wishingStar.x,
+          wishingStar.y,
+          25,
+        );
+        grad.addColorStop(0, "rgba(255, 255, 255, 1)");
+        grad.addColorStop(0.3, "rgba(229, 196, 83, 0.8)");
+        grad.addColorStop(1, "rgba(229, 196, 83, 0)");
+
+        ctx.beginPath();
+        ctx.arc(wishingStar.x, wishingStar.y, 25, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        // Star base core
+        ctx.beginPath();
+        ctx.arc(wishingStar.x, wishingStar.y, wishingStar.r, 0, Math.PI * 2);
+        ctx.fillStyle = "var(--warm-ivory)";
+        ctx.fill();
+
+        // Dashed guide trail pointing upwards
+        if (!wishingStar.isDragging) {
+          ctx.beginPath();
+          ctx.moveTo(wishingStar.homeX, wishingStar.homeY - 40);
+          ctx.lineTo(wishingStar.homeX, wishingStar.homeY - 180);
+          ctx.strokeStyle = "rgba(251, 248, 243, 0.15)";
+          ctx.setLineDash([3, 5]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      }
+
+      // Dragging physics
+      window.addEventListener("mousedown", (e) => {
+        if (currentSceneIndex !== 6) return;
+        const dx = e.clientX - wishingStar.x;
+        const dy = e.clientY - wishingStar.y;
+        if (Math.sqrt(dx * dx + dy * dy) < 30) {
+          wishingStar.isDragging = true;
+          soundEngine.playBell(440.0, 0.15); // A note chime
+        }
+      });
+
+      window.addEventListener("mousemove", (e) => {
+        if (currentSceneIndex !== 6 || !wishingStar.isDragging) return;
+        wishingStar.x = e.clientX;
+        wishingStar.y = e.clientY;
+
+        // If dragged high enough, release shooting star wish!
+        if (wishingStar.y < wishingStar.homeY - 180) {
+          wishingStar.isDragging = false;
+
+          // Trigger manual gorgeous shooting star
+          shootingStars.push(
+            new ShootingStar(true, wishingStar.x, wishingStar.y),
+          );
+
+          // Bell cascade chord
+          soundEngine.playBell(523.25);
+          setTimeout(() => soundEngine.playBell(659.25), 80);
+          setTimeout(() => soundEngine.playBell(783.99), 160);
+          setTimeout(() => soundEngine.playBell(1046.5), 240);
+
+          // Add heavy splash sparks
+          for (let i = 0; i < 30; i++) {
+            ripples.push({
+              x: wishingStar.x,
+              y: wishingStar.y,
+              r: 1 + Math.random() * 2.5,
+              vx: (Math.random() - 0.5) * 8,
+              vy: -(Math.random() * 6 + 2),
+              color: "var(--warm-gold)",
+              opacity: 1,
+              life: 1.0,
+            });
+          }
+
+          // Reset wishing star position with soft spring ease
+          wishingStar.x = wishingStar.homeX;
+          wishingStar.y = wishingStar.homeY;
+        }
+      });
+
+      window.addEventListener("mouseup", () => {
+        if (currentSceneIndex === 6 && wishingStar.isDragging) {
+          wishingStar.isDragging = false;
+          // Spring back home
+          wishingStar.x = wishingStar.homeX;
+          wishingStar.y = wishingStar.homeY;
+        }
+      });
+
+      // Procedural Aurora Borealis waves
+      function drawAuroraBoreal() {
+        auroraOffset += 0.0012;
+        const segments = 45;
+        const heightMultiplier = 60;
+
+        ctx.beginPath();
+        for (let i = 0; i <= segments; i++) {
+          const x = (i / segments) * width;
+          // Blend multiple sine oscillators for natural atmospheric aurora ribbons
+          const y =
+            height * 0.25 +
+            Math.sin(i * 0.12 + auroraOffset * 8) * heightMultiplier +
+            Math.cos(i * 0.05 - auroraOffset * 4) * (heightMultiplier * 0.4);
+
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+
+        const auroraGrad = ctx.createLinearGradient(
+          0,
+          height * 0.1,
+          0,
+          height * 0.45,
+        );
+        auroraGrad.addColorStop(0, "rgba(100, 240, 180, 0)");
+        auroraGrad.addColorStop(0.5, "rgba(120, 210, 255, 0.08)");
+        auroraGrad.addColorStop(0.8, "rgba(180, 150, 255, 0.03)");
+        auroraGrad.addColorStop(1, "rgba(10,12,26,0)");
+
+        ctx.strokeStyle = auroraGrad;
+        ctx.lineWidth = 45;
+        ctx.lineJoin = "round";
+        ctx.stroke();
+      }
+
+      // =========================================================================
+      // INTERACTIVE UTILITIES & GESTURES (Easter Eggs & UI triggers)
+      // =========================================================================
+
+      // Easter Egg #2: Double Click Sparks
+      window.addEventListener("dblclick", (e) => {
+        discoverEgg(1);
+        for (let i = 0; i < 25; i++) {
+          dustParticles.push({
+            x: e.clientX,
+            y: e.clientY,
+            r: 1.5 + Math.random() * 3.5,
+            opacity: 1,
+            speedY: (Math.random() - 0.5) * 4,
+            speedX: (Math.random() - 0.5) * 4,
+            wobble: Math.random() * Math.PI,
+            wobbleSpeed: 0.05,
+            update() {
+              this.x += this.speedX;
+              this.y += this.speedY;
+              this.opacity -= 0.015;
+            },
+            draw() {
+              ctx.beginPath();
+              ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+              ctx.fillStyle = `rgba(229, 196, 83, ${this.opacity})`;
+              ctx.fill();
+            },
+          });
+        }
+      });
+
+      // Easter Egg #3: Long Press Bloom
+      let pressTimer = null;
+      document.querySelectorAll(".scene-text").forEach((textNode) => {
+        textNode.addEventListener("mousedown", () => {
+          pressTimer = setTimeout(() => {
+            textNode.classList.add("bloomed");
+            discoverEgg(2);
+          }, 1000);
+        });
+        textNode.addEventListener("mouseup", () => {
+          clearTimeout(pressTimer);
+          textNode.classList.remove("bloomed");
+        });
+        textNode.addEventListener("mouseleave", () => {
+          clearTimeout(pressTimer);
+          textNode.classList.remove("bloomed");
+        });
+      });
+
+      // Easter Egg #6: Stillness dissolve timer
+      let stillnessTimer = null;
+      function resetStillnessTimer() {
+        clearTimeout(stillnessTimer);
+        document.getElementById("stillness-screen").classList.remove("active");
+
+        if (currentSceneIndex > 0) {
+          stillnessTimer = setTimeout(() => {
+            document.getElementById("stillness-screen").classList.add("active");
+            discoverEgg(5);
+          }, 8000); // 8 seconds of absolute peace
+        }
+      }
+      window.addEventListener("mousemove", (e) => {
+        // Track mouse targets
+        targetMouseX = e.clientX;
+        targetMouseY = e.clientY;
+        resetStillnessTimer();
+      });
+      window.addEventListener("touchstart", resetStillnessTimer);
+
+      // Easter Egg #7: Rapid Drag wave ripples
+      let lastDragX = 0;
+      let lastDragY = 0;
+      let dragVelocity = 0;
+      window.addEventListener("mousemove", (e) => {
+        if (e.buttons === 1) {
+          // Left mouse button dragged
+          const dx = e.clientX - lastDragX;
+          const dy = e.clientY - lastDragY;
+          dragVelocity = Math.sqrt(dx * dx + dy * dy);
+
+          if (dragVelocity > 45) {
+            // Fast drag sweep
+            ripples.push({
+              x: e.clientX,
+              y: e.clientY,
+              radius: 5,
+              speed: 4 + Math.random() * 3,
+              life: 0,
+            });
+            discoverEgg(6);
+          }
+        }
+        lastDragX = e.clientX;
+        lastDragY = e.clientY;
+      });
+
+      // Easter Egg #8: Dandelion Wish Seed click
+      window.addEventListener("mousedown", (e) => {
+        if (dandelionWishingSeed && !dandelionWishingSeed.captured) {
+          const dx = e.clientX - dandelionWishingSeed.x;
+          const dy = e.clientY - dandelionWishingSeed.y;
+          if (Math.sqrt(dx * dx + dy * dy) < 30) {
+            dandelionWishingSeed.captured = true;
+            discoverEgg(7);
+
+            // Spark splash center bloom
+            const midX = width / 2;
+            const midY = height / 2;
+
+            // Slowly glide seed to center, then pop!
+            const interval = setInterval(() => {
+              const dxCenter = midX - dandelionWishingSeed.x;
+              const dyCenter = midY - dandelionWishingSeed.y;
+              const distCenter = Math.sqrt(
+                dxCenter * dxCenter + dyCenter * dyCenter,
+              );
+
+              if (distCenter < 10) {
+                clearInterval(interval);
+                // Explode seed into golden particles
+                for (let i = 0; i < 40; i++) {
+                  dustParticles.push({
+                    x: midX,
+                    y: midY,
+                    r: 2 + Math.random() * 3,
+                    opacity: 1,
+                    speedY: (Math.random() - 0.5) * 5,
+                    speedX: (Math.random() - 0.5) * 5,
+                    wobble: Math.random() * Math.PI,
+                    wobbleSpeed: 0.02,
+                    update() {
+                      this.x += this.speedX;
+                      this.y += this.speedY;
+                      this.opacity -= 0.01;
+                    },
+                    draw() {
+                      ctx.beginPath();
+                      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+                      ctx.fillStyle = `rgba(229, 196, 83, ${this.opacity})`;
+                      ctx.fill();
+                    },
+                  });
+                }
+                dandelionWishingSeed = null;
+              } else {
+                dandelionWishingSeed.x += dxCenter * 0.15;
+                dandelionWishingSeed.y += dyCenter * 0.15;
+              }
+            }, 16);
+          }
+        }
+      });
+
+      // Easter Egg #9: Letters Connection (US)
+      let foundU = false;
+      let foundS = false;
+      document.querySelectorAll(".highlight-letter").forEach((letterSpan) => {
+        letterSpan.addEventListener("mouseenter", () => {
+          const l = letterSpan.getAttribute("data-letter");
+          soundEngine.playBell(659.25, 0.1); // High crystalline chime
+          if (l === "u") foundU = true;
+          if (l === "s") foundS = true;
+
+          if (foundU && foundS) {
+            discoverEgg(8); // 'u' & 's' completed
+          }
+        });
+      });
+
+      // Easter Egg #10: Swipe Top Banner (Shooting star cascade)
+      let topSwipeStartX = 0;
+      window.addEventListener("mousedown", (e) => {
+        if (e.clientY < 80) {
+          topSwipeStartX = e.clientX;
+        }
+      });
+      window.addEventListener("mouseup", (e) => {
+        if (
+          topSwipeStartX > 0 &&
+          e.clientY < 80 &&
+          Math.abs(e.clientX - topSwipeStartX) > 200
+        ) {
+          // Horizontal sweep triggered!
+          shootingStars.push(
+            new ShootingStar(true, width * 0.1, height * 0.05),
+          );
+          setTimeout(
+            () =>
+              shootingStars.push(
+                new ShootingStar(true, width * 0.3, height * 0.05),
+              ),
+            150,
+          );
+          setTimeout(
+            () =>
+              shootingStars.push(
+                new ShootingStar(true, width * 0.5, height * 0.05),
+              ),
+            300,
+          );
+          discoverEgg(9);
+        }
+        topSwipeStartX = 0;
+      });
+
+      // =========================================================================
+      // DYNAMIC TICKING TIMER: "Two Months Since We Met" (Easter Egg #1)
+      // =========================================================================
+      // Anchor date: 2 months before current system local time (July 14, 2026 -> May 14, 2026)
+      const MET_DATE = new Date("2026-05-14T20:00:00-07:00");
+
+      function updateLiveTimer() {
+        const diffMs = new Date() - MET_DATE;
+        const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+        );
+        const mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+        document.getElementById("days-val").innerText = String(days).padStart(
+          2,
+          "0",
+        );
+        document.getElementById("hours-val").innerText = String(hours).padStart(
+          2,
+          "0",
+        );
+        document.getElementById("mins-val").innerText = String(mins).padStart(
+          2,
+          "0",
+        );
+        document.getElementById("secs-val").innerText = String(secs).padStart(
+          2,
+          "0",
+        );
+      }
+      setInterval(updateLiveTimer, 1000);
+      updateLiveTimer();
+
+      // Easter Egg #1: Title hovering on Ending scene
+      document
+        .getElementById("ending-title")
+        .addEventListener("mouseenter", () => {
+          discoverEgg(0);
+          // Soft sparkle chime cascade
+          soundEngine.playBell(783.99);
+        });
+
+      // =========================================================================
+      // CORE EVENT LISTENERS (Buttons & Modals coordination)
+      // =========================================================================
+
+      // Step inside Memory
+      document
+        .getElementById("start-journey-btn")
+        .addEventListener("click", () => {
+          // Init Sound Engine
+          soundEngine.init();
+
+          // Progression
+          updateScenes(1);
+
+          // Show navigation components
+          document.getElementById("nav-controls").classList.add("visible");
+          document.getElementById("ambient-ui").classList.add("visible");
+          document
+            .getElementById("egg-indicators-panel")
+            .classList.add("visible");
+        });
+
+      // Volume Toggle
+      const volToggleBtn = document.getElementById("volume-toggle-btn");
+      const volOnIcon = document.getElementById("vol-on-icon");
+      const volOffIcon = document.getElementById("vol-off-icon");
+      const audioPanel = document.getElementById("audio-panel");
+
+      volToggleBtn.addEventListener("click", () => {
+        const isMuted = soundEngine.toggleMute();
+        volOnIcon.style.display = isMuted ? "none" : "block";
+        volOffIcon.style.display = isMuted ? "block" : "none";
+      });
+
+      volToggleBtn.addEventListener("mouseenter", () => {
+        audioPanel.classList.add("open");
+      });
+      document
+        .getElementById("ambient-ui")
+        .addEventListener("mouseleave", () => {
+          audioPanel.classList.remove("open");
+        });
+
+      // Volume control slider
+      const volSlider = document.getElementById("volume-control");
+      volSlider.addEventListener("input", (e) => {
+        soundEngine.setVolume(parseFloat(e.target.value) / 100);
+      });
+
+      // Restart Journey
+      document.getElementById("restart-btn").addEventListener("click", () => {
+        updateScenes(0);
+
+        // Clear trace states
+        tracedLines = [];
+        constellationStars.forEach((s) => (s.glowing = false));
+        clearConstellations();
+      });
+
+      // Navigation arrow buttons click
+      document.getElementById("prev-btn").addEventListener("click", () => {
+        if (currentSceneIndex > 0) updateScenes(currentSceneIndex - 1);
+      });
+      document.getElementById("next-btn").addEventListener("click", () => {
+        if (currentSceneIndex < TOTAL_SCENES - 1)
+          updateScenes(currentSceneIndex + 1);
+      });
+
+      // Direct dots clicking
+      document
+        .getElementById("progress-dots")
+        .addEventListener("click", (e) => {
+          if (e.target.classList.contains("dot")) {
+            const targetIdx = parseInt(e.target.getAttribute("data-index"));
+            updateScenes(targetIdx);
+          }
+        });
+
+      // Ledger Modal Controls
+      const ledgerModal = document.getElementById("ledger-modal");
+      document
+        .getElementById("open-ledger-btn")
+        .addEventListener("click", () => {
+          updateLedgerItems();
+          ledgerModal.classList.add("open");
+        });
+      document
+        .getElementById("close-ledger-btn")
+        .addEventListener("click", () => {
+          ledgerModal.classList.remove("open");
+        });
+
+      // Init LED indicators state on start
+      initIndicators();
+    </script>
+  </body>
+</html>
